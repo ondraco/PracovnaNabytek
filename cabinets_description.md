@@ -63,7 +63,7 @@ The L-shaped countertop (`4 cm` thick, dark smoked oak) sits directly on top of 
 
 | ID | Czech Name (`model.html`) | Position | Module Size (W × D × H) | Elevation (`Y`) | Opening / Interior |
 | --- | --- | --- | --- | --- | --- |
-| **L1** | Vysoká levá skříň | Left arm, outer (`Z: 120–180`) | `60 × 60 × 262 cm` | `0–262 cm` | 1 tall door (TULIP IDA 160 mm); 4 internal pull-out drawers + 3 shelves |
+| **L1** | Vysoká levá skříň | Left arm, outer (`Z: 120–180`) | `60 × 60 × 262 cm` | `0–262 cm` | 1 tall door (TULIP IDA 160 mm); 4 internal pull-out drawers + 4 shelves |
 | **L2** | Spodní rohová skříňka levá | Left arm, lower corner (`Z: 0–120`) | `120 × 60 × 82 cm` *(56 cm door + 4 cm corner filler)* | `0–82 cm` *(86 w/ top)* | 1 solid door (TULIP IDA 160 mm); 1 internal shelf |
 | **L3** | Horní rohová skříňka levá | Left arm, upper corner (`Z: 0–120`) | `120 × 60 × 111 cm` *(76 cm door + 4 cm corner filler)* | `151–262 cm` *(carcass 152.5)* | 1 solid door (handleless, 15 mm bottom overhang); 2 internal shelves |
 | **R1** | Spodní pravá zásuvková 1 | Right arm, lower left (`X: 60–112`) | `52 × 60 × 82 cm` *(48 cm drawers + 4 cm corner filler)* | `0–82 cm` *(86 w/ top)* | 3 external drawers (TULIP IDA 160 mm, 50 mm from top edge) |
@@ -95,8 +95,10 @@ The L-shaped countertop (`4 cm` thick, dark smoked oak) sits directly on top of 
     2. **Internal Drawer 2:** `Y: 40–65 cm` (`25 cm` high; `2 cm` spacing)
     3. **Internal Drawer 3:** `Y: 67–92 cm` (`25 cm` high; `2 cm` spacing)
     4. **Internal Drawer 4 (top):** `Y: 94–119 cm` (`25 cm` high; `2 cm` spacing)
-- **Interior — Upper Shelf Zone (`Y: 120–262 cm`):**
-  - **3 shelves** (`1.8 cm` thick, `56.4 × 55.0 cm`) at `Y = 145 cm`, `182 cm`, and `220 cm`.
+- **Interior — Upper Shelf Zone (`Y: 121–262 cm`):**
+  - **4 shelves** (`1.8 cm` thick, `56.4 × 55.0 cm`):
+    1. Cover shelf right above Internal Drawer 4 at **`Y = 121 cm`** (`2 cm` clearance above Drawer 4 top at `Y = 119 cm`)
+    2. Evenly spaced upper shelves at **`Y = 156 cm`**, **`Y = 191 cm`**, and **`Y = 225 cm`** (~`33 cm` clear bay height each)
 
 #### **L2 — Lower Left Corner Cabinet (`Spodní rohová skříňka levá`)**
 - **Overall dimensions:** `120 cm` total carcass width (`56 cm` door `Z: 64–120 cm` + `4 cm` corner filler `Z: 60–64 cm` + `60 cm` corner reach `Z: 0–60 cm` meeting `R1` flush at `X = 60 cm`) × `60 cm` (D) × `82 cm` (H) (`86 cm` with `4 cm` countertop).

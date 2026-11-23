@@ -733,8 +733,9 @@
             // Zapuštěný sokl (Y: 0..10 cm, X: 0..56.5 cm, Z: 120..178.2 cm)
             tallCabinetGroup.add(createPanelBox(0, 56.5, 0, 10, 120, 180 - t, materials.plinthMaterial, 'Sokl_vysoka'));
 
-            // Vnitřní police nad výškou 120 cm (v úrovních Y = 145, 182, 220 cm)
-            [145, 182, 220].forEach((shelfY, idx) => {
+            // Vnitřní police nad 4 šuplíky: 1. krycí police těsně nad horním šuplíkem (Y = 121 cm, mezera 2 cm),
+            // zbývající 3 police rovnoměrně rozmístěny po ~33 cm (Y = 156, 191, 225 cm)
+            [121, 156, 191, 225].forEach((shelfY, idx) => {
                 tallCabinetGroup.add(createPanelBox(
                     t, 56.8,
                     shelfY, shelfY + t,
@@ -857,6 +858,7 @@
             lowerLeftGroup.add(createPanelBox(0, 60 - t, 82 - t, 82, 0, 120, materials.carcassOak, 'Strop_korpus_spodni_leva'));
             lowerLeftGroup.add(createPanelBox(60 - t, 60, 82 - t, 82, 0, 60 - t, materials.carcassOak, 'Strop_korpus_spodni_leva_roh'));
             lowerLeftGroup.add(createPanelBox(0, 60 - t, 10 + t, 82 - t, 120 - t, 120, materials.carcassOak, 'Bok_spodni_leva_Z120'));
+            lowerLeftGroup.add(createPanelBox(t, 60, 10 + t, 82 - t, 0, t, materials.carcassOak, 'Bok_spodni_leva_Z0'));
             lowerLeftGroup.add(createPanelBox(0, t, 10 + t, 82 - t, 0, 120 - t, materials.carcassOak, 'Zada_spodni_leva'));
             // Rohová vymezovací lišta na straně L2 (Z: 58.2..64.0 cm, X: 58.2..60.0 cm, Y: 10..82 cm) – uzavírá roh bez spáry a vytváří 4 cm odsazení pantu
             lowerLeftGroup.add(createPanelBox(60 - t, 60, 10, 82, 60 - t, 60 + cf, materials.oakVertical, 'Rohova_lista_L2'));
@@ -980,15 +982,26 @@
                     frontMesh.receiveShadow = true;
                     drawerGroup.add(frontMesh);
 
-                    // Vnitřní zásuvková krabice (viditelná při vysunutí)
-                    const boxMesh = new THREE.Mesh(
-                        new THREE.BoxGeometry(dW - 3.2, dH - 3.6, 48),
-                        materials.carcassOak
-                    );
-                    boxMesh.position.set(0, -0.6, -24);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    drawerGroup.add(boxMesh);
+                    // Dutá vnitřní zásuvková krabice (bočnice, záda, dno a ocelové pojezdy – viditelné při vysunutí)
+                    const boxW = dW - 3.2;
+                    const boxH = dH - 4.2;
+                    const boxD = 48.0;
+                    const boxT = 1.6;
+                    const bottomT = 1.2;
+                    const yBot = -dH / 2 + 1.2;
+                    const yTop = yBot + boxH;
+                    const yBoxMid = (yBot + yTop) / 2;
+
+                    // Levá a pravá bočnice zásuvky
+                    drawerGroup.add(createPanelBox(-boxW / 2, -boxW / 2 + boxT, yBot, yTop, -boxD, 0, materials.carcassOak, `Bocnice_L_R${col + 1}_R${row + 1}`));
+                    drawerGroup.add(createPanelBox(boxW / 2 - boxT, boxW / 2, yBot, yTop, -boxD, 0, materials.carcassOak, `Bocnice_P_R${col + 1}_R${row + 1}`));
+                    // Zadní čelo zásuvky
+                    drawerGroup.add(createPanelBox(-boxW / 2 + boxT, boxW / 2 - boxT, yBot, yTop, -boxD, -boxD + boxT, materials.carcassOak, `Zada_R${col + 1}_R${row + 1}`));
+                    // Dno zásuvky
+                    drawerGroup.add(createPanelBox(-boxW / 2 + boxT, boxW / 2 - boxT, yBot, yBot + bottomT, -boxD + boxT, 0, materials.carcassOak, `Dno_R${col + 1}_R${row + 1}`));
+                    // Teleskopické ocelové pojezdy na bocích zásuvky
+                    drawerGroup.add(createPanelBox(-boxW / 2 - 0.5, -boxW / 2, yBoxMid - 1.2, yBoxMid + 1.2, -boxD + 2, -1, materials.steelSlide, `Pojezd_L_R${col + 1}_R${row + 1}`));
+                    drawerGroup.add(createPanelBox(boxW / 2, boxW / 2 + 0.5, yBoxMid - 1.2, yBoxMid + 1.2, -boxD + 2, -1, materials.steelSlide, `Pojezd_P_R${col + 1}_R${row + 1}`));
 
                     // Vodorovná úchytka TULIP IDA 160 mm (nikl matný) na střed šířky a 50 mm pod horní hranou čela (dle kuchyně.pdf)
                     const handleMesh = createStandardHandle(materials.matteNickelMetal, true);
