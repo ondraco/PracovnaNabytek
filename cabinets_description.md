@@ -15,9 +15,9 @@ The assembly is an L-shaped floor-to-ceiling cabinet unit placed in a room corne
 | **Ceiling / overall height** (`Y: 0–262 cm`) | **262 cm** | Flush to ceiling |
 | **Lower & left-arm depth** | **60 cm** | Applies to `L1`, `L2`, `L3`, `R1`, `R2`, `R3` |
 | **Upper right-arm depth** | **40 cm** | Applies to `R4`, `R5`, `R6` |
-| **Recessed plinth (sokl)** | **10 cm** | `Y: 0–10 cm`, recessed `3.5 cm` (`56.5 cm` depth) |
+| **Recessed plinth (sokl)** | **10 cm** | `Y: 0–10 cm`, recessed `3.5 cm` (`56.5 cm` depth); same light **KRONOSPAN K529 HU** oak decor as the cabinets |
 | **Lower carcass height** | **72 cm** | `Y: 10–82 cm` |
-| **Countertop (pracovní deska)** | **4 cm thick** | `Y: 82–86 cm` (dark smoked oak / tmavě hnědý kouřový dub) |
+| **Countertop (pracovní deska)** | **4 cm thick** | `Y: 82–86 cm` — **only dark element** (dark smoked oak / tmavě hnědý kouřový dub) |
 | **Upper cabinets height** (`L3`, `R4`–`R6`) | **111 cm** *(doors)* / **109.5 cm** *(carcass)* | Doors `Y: 151–262 cm`; carcass `Y: 152.5–262 cm` (`15 mm` bottom door overhang) |
 | **Board thickness (lamina)** | **1.8 cm (18 mm)** | Standard carcasses, doors, shelves, and outer end panels |
 | **Door / drawer front reveal gap** | **0.25 cm (2.5 mm)** | Uniform construction gap around all fronts |
@@ -64,12 +64,12 @@ The L-shaped countertop (`4 cm` thick, dark smoked oak) sits directly on top of 
 | ID | Czech Name (`model.html`) | Position | Module Size (W × D × H) | Elevation (`Y`) | Opening / Interior |
 | --- | --- | --- | --- | --- | --- |
 | **L1** | Vysoká levá skříň | Left arm, outer (`Z: 120–180`) | `60 × 60 × 262 cm` | `0–262 cm` | 1 tall door (TULIP IDA 160 mm); 4 internal pull-out drawers + 3 shelves |
-| **L2** | Spodní rohová skříňka levá | Left arm, lower corner (`Z: 0–120`) | `120 × 60 × 82 cm` *(60 cm front)* | `0–82 cm` *(86 w/ top)* | 1 solid door (TULIP IDA 160 mm); 1 internal shelf |
-| **L3** | Horní rohová skříňka levá | Left arm, upper corner (`Z: 0–120`) | `120 × 60 × 111 cm` *(80 cm front)* | `151–262 cm` *(carcass 152.5)* | 1 solid door (handleless, 15 mm bottom overhang); 2 internal shelves |
-| **R1** | Spodní pravá zásuvková 1 | Right arm, lower left (`X: 60–112`) | `52 × 60 × 82 cm` | `0–82 cm` *(86 w/ top)* | 3 external drawers (TULIP IDA 160 mm, 50 mm from top edge) |
+| **L2** | Spodní rohová skříňka levá | Left arm, lower corner (`Z: 0–120`) | `120 × 60 × 82 cm` *(56 cm door + 4 cm corner filler)* | `0–82 cm` *(86 w/ top)* | 1 solid door (TULIP IDA 160 mm); 1 internal shelf |
+| **L3** | Horní rohová skříňka levá | Left arm, upper corner (`Z: 0–120`) | `120 × 60 × 111 cm` *(76 cm door + 4 cm corner filler)* | `151–262 cm` *(carcass 152.5)* | 1 solid door (handleless, 15 mm bottom overhang); 2 internal shelves |
+| **R1** | Spodní pravá zásuvková 1 | Right arm, lower left (`X: 60–112`) | `52 × 60 × 82 cm` *(48 cm drawers + 4 cm corner filler)* | `0–82 cm` *(86 w/ top)* | 3 external drawers (TULIP IDA 160 mm, 50 mm from top edge) |
 | **R2** | Spodní pravá zásuvková 2 | Right arm, lower middle (`X: 112–164`) | `52 × 60 × 82 cm` | `0–82 cm` *(86 w/ top)* | 3 external drawers (TULIP IDA 160 mm, 50 mm from top edge) |
 | **R3** | Spodní pravá zásuvková 3 | Right arm, lower right (`X: 164–216`) | `52 × 60 × 82 cm` | `0–82 cm` *(86 w/ top)* | 3 external drawers (TULIP IDA 160 mm, 50 mm from top edge) |
-| **R4** | Horní pravá skříňka 1 | Right arm, upper left (`X: 60–112`) | `52 × 40 × 111 cm` | `151–262 cm` *(carcass 152.5)* | 1 hinged door (left hinges, handleless 15 mm overhang); 2 shelves |
+| **R4** | Horní pravá skříňka 1 | Right arm, upper left (`X: 60–112`) | `52 × 40 × 111 cm` *(48 cm door + 4 cm corner filler)* | `151–262 cm` *(carcass 152.5)* | 1 hinged door (left hinges, handleless 15 mm overhang); 2 shelves |
 | **R5** | Horní pravá skříňka 2 | Right arm, upper middle (`X: 112–164`) | `52 × 40 × 111 cm` | `151–262 cm` *(carcass 152.5)* | 1 hinged door (left hinges, handleless 15 mm overhang); 2 shelves |
 | **R6** | Horní pravá skříňka 3 | Right arm, upper right (`X: 164–216`) | `52 × 40 × 111 cm` | `151–262 cm` *(carcass 152.5)* | 1 hinged door (right hinges, handleless 15 mm overhang); 2 shelves |
 
@@ -99,18 +99,18 @@ The L-shaped countertop (`4 cm` thick, dark smoked oak) sits directly on top of 
   - **3 shelves** (`1.8 cm` thick, `56.4 × 55.0 cm`) at `Y = 145 cm`, `182 cm`, and `220 cm`.
 
 #### **L2 — Lower Left Corner Cabinet (`Spodní rohová skříňka levá`)**
-- **Overall dimensions:** `120 cm` total carcass width (`60 cm` visible front `Z: 60–120 cm` + `60 cm` corner reach `Z: 0–60 cm`) × `60 cm` (D) × `82 cm` (H) (`86 cm` with `4 cm` countertop).
+- **Overall dimensions:** `120 cm` total carcass width (`56 cm` door `Z: 64–120 cm` + `4 cm` corner filler `Z: 60–64 cm` + `60 cm` corner reach `Z: 0–60 cm` meeting `R1` flush at `X = 60 cm`) × `60 cm` (D) × `82 cm` (H) (`86 cm` with `4 cm` countertop).
   - Plinth: `10 cm` (`Y: 0–10 cm`), carcass: `72 cm` (`Y: 10–82 cm`).
-- **Door:** 1 single solid door (`59.5 × 71.5 cm`, nominal `60 × 72 cm`), vertical grain.
-  - **Hinges:** Right side (`Z = 60 cm`), opening `92°`.
+- **Door:** 1 single solid door (`55.5 × 71.5 cm`, nominal `56 × 72 cm`), vertical grain.
+  - **Hinges:** Right side (`Z = 64.25 cm`, offset `4 cm` from the inner corner via the corner filler strip), opening `90°` cleanly with `2.45 cm` clearance from `R1`.
   - **Handle:** Vertical **TULIP IDA 160 mm** (matte nickel), `50 mm` (`5 cm`) from the left opening edge (`Z ≈ 115 cm`) and `50 mm` (`5 cm`) below the top edge (`Y: 60.75–76.75 cm`).
 - **Interior:** 1 full-length shelf (`1.8 cm` thick) at `Y = 46 cm`.
 
 #### **L3 — Upper Left Corner Cabinet (`Horní rohová skříňka levá`)**
-- **Overall dimensions:** `120 cm` total carcass width (`80 cm` visible front `Z: 40–120 cm` + `40 cm` corner section `Z: 0–40 cm` meeting `R4`) × `60 cm` (D) × `111 cm` door height (`109.5 cm` carcass height, `Y: 152.5–262 cm`).
+- **Overall dimensions:** `120 cm` total carcass width (`76 cm` door `Z: 44–120 cm` + `4 cm` corner filler `Z: 40–44 cm` + `40 cm` corner section `Z: 0–40 cm` meeting `R4` flush at `X = 60 cm`) × `60 cm` (D) × `111 cm` door height (`109.5 cm` carcass height, `Y: 152.5–262 cm`).
 - **Clearance below:** **`65 cm`** from countertop top surface (`Y = 86 cm`) to bottom edge of the overhanging door (`Y = 151 cm`); `66.5 cm` to carcass underside (`Y = 152.5 cm`).
-- **Door:** 1 single solid door (`79.5 × 110.75 cm`, nominal `80 × 111 cm`), vertical grain.
-  - **Hinges:** Right side (`Z = 40 cm`), opening `92°`.
+- **Door:** 1 single solid door (`75.5 × 110.75 cm`, nominal `76 × 111 cm`), vertical grain.
+  - **Hinges:** Right side (`Z = 44.25 cm`, offset `4 cm` from the inner corner via the corner filler strip), opening `90°` cleanly with `2.45 cm` clearance from `R4`.
   - **Opening:** **Handleless** — **`15 mm` (`1.5 cm`) bottom door overhang** below the carcass bottom (`Y = 151 cm` vs. `152.5 cm`).
 - **Interior:** 2 full-length shelves (`1.8 cm` thick) at `Y = 188 cm` and `Y = 225 cm`.
 
@@ -129,8 +129,8 @@ Three equal `52 cm` modules (`156 cm` combined width) housing **9 wide external 
   - **Drawer boxes:** `48 cm` deep, `30 cm` pull-out extension (`0.5 cm` spacing between drawer fronts).
 
 #### **R1 — Lower Right Drawer Cabinet 1 (`X: 60–112 cm`)**
-- **Dimensions:** `52 cm` (W) × `60 cm` (D) × `82 cm` (H) (`86 cm` with countertop).
-- **Drawer fronts:** `51.5 × 23.5 cm` (`3 pcs`).
+- **Dimensions:** `52 cm` (W) × `60 cm` (D) × `82 cm` (H) (`86 cm` with countertop). Includes a **`4 cm` corner filler strip** (`X: 60–64 cm`) meeting `L2`'s `4 cm` corner filler cleanly with no gap and aligning vertically with `R4`'s corner filler above.
+- **Drawer fronts:** `47.5 × 23.5 cm` (`3 pcs`, nominal `48 cm`, `4.25 cm` clear of `L2`'s door face).
 
 #### **R2 — Lower Right Drawer Cabinet 2 (`X: 112–164 cm`)**
 - **Dimensions:** `52 cm` (W) × `60 cm` (D) × `82 cm` (H) (`86 cm` with countertop).
@@ -148,8 +148,8 @@ Three equal `52 cm` modules (`156 cm` combined width) housing **9 wide external 
 Three `52 cm` modules (`156 cm` combined width) aligned directly above `R1`–`R3`, with a reduced **`40 cm` depth** (`20 cm` shallower than the lower cabinets and `L3`). All three have **`65 cm` clearance** above the countertop (`Y: 86–151 cm` to bottom of door; carcass starts at `Y = 152.5 cm`), **handleless** vertical-grain doors opening via a **`15 mm` (`1.5 cm`) bottom overhang**, and **2 internal shelves** at `Y = 188 cm` and `Y = 225 cm` (shelf depth `34.7 cm`, `Z: 1.8–36.5 cm`).
 
 #### **R4 — Upper Right Cabinet 1 (`X: 60–112 cm`, above `R1`)**
-- **Dimensions:** `52 cm` (W) × `40 cm` (D) × `111 cm` door height (`109.5 cm` carcass, `Y: 152.5–262 cm`).
-- **Door:** `51.5 × 110.75 cm` (nominal `52 × 111 cm`), hinged on the **left** (`X = 60.25 cm`), opens `95°`.
+- **Dimensions:** `52 cm` (W) × `40 cm` (D) × `111 cm` door height (`109.5 cm` carcass, `Y: 152.5–262 cm`). Includes a **`4 cm` corner filler strip** (`X: 60–64 cm`) meeting `L3`'s `4 cm` corner filler cleanly with no gap.
+- **Door:** `47.5 × 110.75 cm` (nominal `48 × 111 cm`), hinged on the **left** (`X = 64.25 cm`, offset `4 cm` from the corner), opens `90°` cleanly with `2.45 cm` clearance from `L3`.
 - **Opening:** **Handleless** — `15 mm` (`1.5 cm`) bottom door overhang.
 - **Interior:** 2 shelves (`Y = 188 cm`, `225 cm`).
 
