@@ -143,9 +143,13 @@
                     <span>Boční pohled (180 cm)</span>
                     <span class="text-[10px] text-gray-400">Levé rameno</span>
                 </button>
-                <button data-view="plan" class="cad-btn col-span-2 sm:col-span-1 rounded-xl px-3 py-2 text-xs font-medium text-left border border-white/10 flex items-center justify-between">
+                <button data-view="plan" class="cad-btn rounded-xl px-3 py-2 text-xs font-medium text-left border border-white/10 flex items-center justify-between">
                     <span>Půdorys</span>
                     <span class="text-[10px] text-gray-400">60 vs 40 cm</span>
+                </button>
+                <button data-view="plinthDetail" class="cad-btn rounded-xl px-3 py-2 text-xs font-medium text-left border border-white/10 flex items-center justify-between">
+                    <span>Detail soklu a nožek</span>
+                    <span class="text-[10px] text-sky-300/90">22 nožek</span>
                 </button>
             </div>
         </div>
@@ -185,6 +189,12 @@
                     class="cad-btn active w-full rounded-xl px-3 py-2 text-xs font-medium text-left border border-white/10 flex items-center justify-between">
                 <span>3D kóty (rozměry v cm)</span>
                 <span id="badge-dims" class="px-2 py-0.5 rounded-md text-[10px] bg-amber-400/20 text-amber-200">ZAP</span>
+            </button>
+
+            <button id="btn-toggle-plinth"
+                    class="cad-btn active w-full rounded-xl px-3 py-2 text-xs font-medium text-left border border-white/10 flex items-center justify-between">
+                <span>Krycí lišty soklu (odkrýt nožky)</span>
+                <span id="badge-plinth" class="px-2 py-0.5 rounded-md text-[10px] bg-amber-400/20 text-amber-200">ZAP</span>
             </button>
 
             <button id="btn-toggle-room"
@@ -237,7 +247,9 @@
             CEILING_H: 262,          // Výška stropu a horní hrany skříní
             BASE_DEPTH: 60,          // Hloubka spodních skříněk a levého ramena
             UPPER_RIGHT_DEPTH: 40,   // Hloubka horních pravých skříněk (40 cm)
-            PLINTH_H: 10,            // Výška soklu (10 cm)
+            PLINTH_H: 10,            // Výška soklu / rektifikačních nožek (10 cm)
+            PLINTH_RECESS: 3.5,      // Zapuštění krycích soklových lišt od čela a vnějších boků (3.5 cm)
+            PLINTH_SEAL_H: 0.25,     // Spodní těsnicí PVC profil soklu proti prachu a vlhkosti (2.5 mm)
             BASE_CARCASS_TOP: 82,    // Horní hrana spodních korpusů (82 cm)
             COUNTER_THICK: 4,        // Tloušťka pracovní desky (4 cm -> Y: 82..86 cm)
             UPPER_BOTTOM: 151,       // Spodní hrana dvířek horních skříněk (86 + 65 = 151 cm, výška dvířek 111 cm do 262 cm)
@@ -249,7 +261,7 @@
         };
 
         let scene, camera, renderer, controls;
-        let cabinetRoot, roomGroup, dimensionsGroup, labelsGroup;
+        let cabinetRoot, roomGroup, dimensionsGroup, labelsGroup, legsGroup, plinthCoversGroup;
         let interactiveItems = [];   // Všechna animovatelná dvířka a šuplíky
         let tallCabinetDoor = null;  // Reference na vysoké levé dveře
         let internalDrawers = [];    // Reference na 4 skryté vnitřní šuplíky v levé skříni
@@ -261,6 +273,7 @@
         let showDims = true;
         let showRoom = true;
         let showLabels = true;
+        let showPlinthCovers = true;
 
         const raycaster = new THREE.Raycaster();
         const pointerNDC = new THREE.Vector2();
@@ -530,13 +543,37 @@
                     roughness: 0.28,
                     metalness: 0.88
                 }),
-                // Zapuštěný sokl – světlý dekor KRONOSPAN K529 HU (Hudson Dub Zlatý) shodný se skříňkami (tmavá je pouze pracovní deska)
+                // Nacvakávací krycí soklové lišty (18 mm) – světlý dekor KRONOSPAN K529 HU shodný se skříňkami
                 plinthMaterial: new THREE.MeshStandardMaterial({
                     map: horiz.map,
                     bumpMap: horiz.bumpMap,
                     bumpScale: 0.12,
                     roughness: 0.56,
                     metalness: 0.04
+                }),
+                // Spodní těsnicí PVC profil soklu (těsnicí lišta proti prachu a vlhkosti)
+                plinthSealMaterial: new THREE.MeshStandardMaterial({
+                    color: 0x3b3530,
+                    roughness: 0.72,
+                    metalness: 0.05
+                }),
+                // Rektifikační nožka – tělo, horní montážní příruba a patka (černý/antracitový ABS plast)
+                legBodyMaterial: new THREE.MeshStandardMaterial({
+                    color: 0x2c323c,
+                    roughness: 0.44,
+                    metalness: 0.14
+                }),
+                // Rektifikační nožka – závitový dřík a šestihranná seřizovací matice
+                legThreadMaterial: new THREE.MeshStandardMaterial({
+                    color: 0x5c6472,
+                    roughness: 0.36,
+                    metalness: 0.42
+                }),
+                // Nacvakávací soklový klip (příchytka krycí lišty na dřík nožky)
+                legClipMaterial: new THREE.MeshStandardMaterial({
+                    color: 0x3f4754,
+                    roughness: 0.48,
+                    metalness: 0.14
                 })
             };
         }
@@ -705,6 +742,185 @@
         }
 
         /**
+         * Vytvoří 100mm rektifikační (seřiditelnou) nábytkovou nožku s horní montážní přírubou,
+         * závitovým dříkem, šestihrannou maticí, patkou a volitelnými nacvakávacími soklovými klipy.
+         */
+        function createAdjustableLeg({ x, z, clips = [], materials, name = 'Rektifikacni_nozka' }) {
+            const group = new THREE.Group();
+            group.position.set(x, 0, z);
+            group.name = name;
+
+            const h = SPEC.PLINTH_H; // 10 cm
+            const reach = 3.7;       // Vzdálenost osy nožky od rubové plochy 18mm krycí soklové lišty (54.7 - 51.0 = 3.7 cm)
+
+            // 1. Horní čtvercová montážní příruba přišroubovaná ke dnu korpusu (Y: 9.4..10.0 cm)
+            const plate = new THREE.Mesh(new THREE.BoxGeometry(5.4, 0.6, 5.4), materials.legBodyMaterial);
+            plate.position.set(0, h - 0.3, 0);
+            plate.castShadow = true;
+            plate.receiveShadow = true;
+            plate.name = `${name}_priruba`;
+            group.add(plate);
+
+            // 2. Horní válcové pouzdro / tělo nožky (Ø 32 mm, Y: 4.2..9.4 cm) – sem se nacvakává soklový klip
+            const barrel = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 5.2, 16), materials.legBodyMaterial);
+            barrel.position.set(0, 6.8, 0);
+            barrel.castShadow = true;
+            barrel.receiveShadow = true;
+            barrel.name = `${name}_pouzdro`;
+            group.add(barrel);
+
+            // 3. Teleskopický závitový dřík pro výškovou rektifikaci (Ø 23 mm, Y: 1.4..4.4 cm)
+            const stem = new THREE.Mesh(new THREE.CylinderGeometry(1.15, 1.15, 3.0, 14), materials.legThreadMaterial);
+            stem.position.set(0, 2.9, 0);
+            stem.castShadow = true;
+            stem.name = `${name}_zavit`;
+            group.add(stem);
+
+            // 4. Šestihranná seřizovací matice nad patkou (Y: 1.4..2.25 cm)
+            const hexNut = new THREE.Mesh(new THREE.CylinderGeometry(1.7, 1.7, 0.85, 6), materials.legThreadMaterial);
+            hexNut.position.set(0, 1.825, 0);
+            hexNut.castShadow = true;
+            hexNut.name = `${name}_matice`;
+            group.add(hexNut);
+
+            // 5. Kónický přechod a široká podlahová patka (Ø 48 mm, Y: 0.0..1.4 cm)
+            const neck = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 2.35, 0.55, 16), materials.legBodyMaterial);
+            neck.position.set(0, 1.125, 0);
+            neck.castShadow = true;
+            group.add(neck);
+
+            const foot = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.4, 0.85, 18), materials.legBodyMaterial);
+            foot.position.set(0, 0.425, 0);
+            foot.castShadow = true;
+            foot.receiveShadow = true;
+            foot.name = `${name}_patka`;
+            group.add(foot);
+
+            // 6. Nacvakávací soklové klipy (příchytky pro krycí lišty na pohledových stranách)
+            if (clips.length > 0) {
+                const clipY = 6.6;
+                const collar = new THREE.Mesh(new THREE.CylinderGeometry(1.82, 1.82, 1.8, 16), materials.legClipMaterial);
+                collar.position.set(0, clipY, 0);
+                collar.castShadow = true;
+                collar.name = `${name}_objimka_klipu`;
+                group.add(collar);
+
+                const armLen = reach - 1.5 - 0.4; // 1.8 cm
+                clips.forEach(dir => {
+                    if (dir === '+X') {
+                        const arm = new THREE.Mesh(new THREE.BoxGeometry(armLen, 1.3, 1.4), materials.legClipMaterial);
+                        arm.position.set(1.5 + armLen / 2, clipY, 0);
+                        arm.castShadow = true;
+                        group.add(arm);
+
+                        const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.45, 2.6, 3.2), materials.legClipMaterial);
+                        shoe.position.set(reach - 0.225, clipY, 0);
+                        shoe.castShadow = true;
+                        shoe.name = `${name}_klip_X`;
+                        group.add(shoe);
+                    } else if (dir === '+Z') {
+                        const arm = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.3, armLen), materials.legClipMaterial);
+                        arm.position.set(0, clipY, 1.5 + armLen / 2);
+                        arm.castShadow = true;
+                        group.add(arm);
+
+                        const shoe = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.6, 0.45), materials.legClipMaterial);
+                        shoe.position.set(0, clipY, reach - 0.225);
+                        shoe.castShadow = true;
+                        shoe.name = `${name}_klip_Z`;
+                        group.add(shoe);
+                    }
+                });
+            }
+
+            return group;
+        }
+
+        /**
+         * Sestaví podstavec na 22 rektifikačních nožkách (100 mm) a 4 tenkých nacvakávacích
+         * krycích soklových lištách (18 mm lamino + 2.5 mm těsnicí profil) pouze z pohledových stran.
+         * Strany u stěn (X = 0, Z = 0) zůstávají pod korpusy otevřené pro odvětrání a rozvody.
+         */
+        function buildBaseLegsAndPlinth(materials) {
+            const t = SPEC.BOARD_T;          // 1.8 cm
+            const plinthH = SPEC.PLINTH_H;   // 10.0 cm
+            const sealH = SPEC.PLINTH_SEAL_H;// 0.25 cm
+            const rec = SPEC.PLINTH_RECESS;  // 3.5 cm
+
+            const frontFace = SPEC.BASE_DEPTH - rec;       // 56.5 cm
+            const frontBack = frontFace - t;               // 54.7 cm
+            const leftEndFace = SPEC.LEFT_ARM_LEN - rec;   // 176.5 cm
+            const leftEndBack = leftEndFace - t;           // 174.7 cm
+            const rightEndFace = SPEC.RIGHT_ARM_LEN - rec; // 212.5 cm
+            const rightEndBack = rightEndFace - t;         // 210.7 cm
+
+            // --- 1. REKTIFIKAČNÍ NOŽKY (celkem 22 ks: L1 = 4, L2 = 6, R1 = 4, R2 = 4, R3 = 4) ---
+            legsGroup = new THREE.Group();
+            legsGroup.name = 'Rektifikacni_nozky_100mm_22ks';
+
+            const legSpecs = [
+                // L1 – Vysoká levá skříň (Z: 120..180 cm, 4 nožky)
+                { x: 7.0,   z: 126.0, clips: [],           name: 'Nozka_L1_zadni_prava' },
+                { x: 7.0,   z: 171.0, clips: ['+Z'],       name: 'Nozka_L1_zadni_leva' },
+                { x: 51.0,  z: 126.0, clips: ['+X'],       name: 'Nozka_L1_predni_prava' },
+                { x: 51.0,  z: 171.0, clips: ['+X', '+Z'], name: 'Nozka_L1_predni_leva' },
+
+                // L2 – Spodní rohová skříňka levá (Z: 0..120 cm, 6 nožek pro rozpětí 120 cm)
+                { x: 7.0,   z: 7.0,   clips: [],           name: 'Nozka_L2_zadni_roh' },
+                { x: 7.0,   z: 60.0,  clips: [],           name: 'Nozka_L2_zadni_stred' },
+                { x: 7.0,   z: 114.0, clips: [],           name: 'Nozka_L2_zadni_leva' },
+                { x: 51.0,  z: 7.0,   clips: [],           name: 'Nozka_L2_predni_roh' },
+                { x: 51.0,  z: 62.0,  clips: ['+X'],       name: 'Nozka_L2_predni_stred' },
+                { x: 51.0,  z: 114.0, clips: ['+X'],       name: 'Nozka_L2_predni_leva' },
+
+                // R1 – Spodní pravá zásuvková 1 (X: 60..112 cm, 4 nožky)
+                { x: 66.0,  z: 7.0,   clips: [],           name: 'Nozka_R1_zadni_leva' },
+                { x: 106.0, z: 7.0,   clips: [],           name: 'Nozka_R1_zadni_prava' },
+                { x: 66.0,  z: 51.0,  clips: ['+Z'],       name: 'Nozka_R1_predni_leva' },
+                { x: 106.0, z: 51.0,  clips: ['+Z'],       name: 'Nozka_R1_predni_prava' },
+
+                // R2 – Spodní pravá zásuvková 2 (X: 112..164 cm, 4 nožky)
+                { x: 118.0, z: 7.0,   clips: [],           name: 'Nozka_R2_zadni_leva' },
+                { x: 158.0, z: 7.0,   clips: [],           name: 'Nozka_R2_zadni_prava' },
+                { x: 118.0, z: 51.0,  clips: ['+Z'],       name: 'Nozka_R2_predni_leva' },
+                { x: 158.0, z: 51.0,  clips: ['+Z'],       name: 'Nozka_R2_predni_prava' },
+
+                // R3 – Spodní pravá zásuvková 3 (X: 164..216 cm, 4 nožky)
+                { x: 170.0, z: 7.0,   clips: [],           name: 'Nozka_R3_zadni_leva' },
+                { x: 207.0, z: 7.0,   clips: ['+X'],       name: 'Nozka_R3_zadni_prava' },
+                { x: 170.0, z: 51.0,  clips: ['+Z'],       name: 'Nozka_R3_predni_leva' },
+                { x: 207.0, z: 51.0,  clips: ['+Z', '+X'], name: 'Nozka_R3_predni_prava' }
+            ];
+
+            legSpecs.forEach(spec => {
+                legsGroup.add(createAdjustableLeg({ ...spec, materials }));
+            });
+            cabinetRoot.add(legsGroup);
+
+            // --- 2. NACVAKÁVACÍ KRYCÍ SOKLOVÉ LIŠTY (4 pohledové desky tl. 18 mm + spodní těsnicí profil) ---
+            plinthCoversGroup = new THREE.Group();
+            plinthCoversGroup.name = 'Kryci_soklove_listy_pohledove_4ks';
+
+            const addPlinthCover = (x1, x2, z1, z2, name) => {
+                // 18 mm lamino krycí deska v dekoru KRONOSPAN K529 HU (Y: 0.25..10.0 cm)
+                plinthCoversGroup.add(createPanelBox(x1, x2, sealH, plinthH, z1, z2, materials.plinthMaterial, name));
+                // Spodní těsnicí PVC lišta k podlaze (Y: 0.0..0.25 cm)
+                plinthCoversGroup.add(createPanelBox(x1, x2, 0, sealH, z1, z2, materials.plinthSealMaterial, `${name}_tesneni`));
+            };
+
+            // 2A. Čelní krycí sokl levého ramena (L1 + L2, čelem do +X, délka 120.0 cm)
+            addPlinthCover(frontBack, frontFace, frontFace, leftEndFace, 'Kryci_sokl_predni_levy');
+            // 2B. Boční krycí sokl levého vnějšího konce (pod L1, čelem do +Z, zapuštěn 3.5 cm)
+            addPlinthCover(0, frontBack, leftEndBack, leftEndFace, 'Kryci_sokl_bocni_L1');
+            // 2C. Čelní krycí sokl pravého ramena (R1–R3, čelem do +Z, viditelná délka 156.0 cm)
+            addPlinthCover(frontBack, rightEndFace, frontBack, frontFace, 'Kryci_sokl_predni_pravy');
+            // 2D. Boční krycí sokl pravého vnějšího konce (pod R3, čelem do +X, zapuštěn 3.5 cm)
+            addPlinthCover(rightEndBack, rightEndFace, 0, frontBack, 'Kryci_sokl_bocni_R3');
+
+            cabinetRoot.add(plinthCoversGroup);
+        }
+
+        /**
          * Sestaví kompletní 3D kuchyňskou a úložnou sestavu podle přesného zadání
          */
         function buildAssembly(materials) {
@@ -722,16 +938,14 @@
             const tallCabinetGroup = new THREE.Group();
             tallCabinetGroup.name = 'Vysoka_leva_skrin_60x60x262';
 
-            // Vnější levý bok (Z: 178.2..180 cm) až na podlahu Y = 0 cm
-            tallCabinetGroup.add(createPanelBox(0, 60, 0, 262, 180 - t, 180, materials.oakVertical, 'Bok_vysoka_vnejsi_Z180'));
+            // Vnější levý bok korpusu (Z: 178.2..180 cm, Y: 10..262 cm, X: 0..58.2 cm) – korpus stojí na rektifikačních nožkách v Y = 10 cm
+            tallCabinetGroup.add(createPanelBox(0, 60 - t, 10, 262, 180 - t, 180, materials.oakVertical, 'Bok_vysoka_vnejsi_Z180'));
             // Vnitřní pravý bok korpusu (Z: 120..121.8 cm, Y: 10..262 cm, X: 0..58.2 cm)
             tallCabinetGroup.add(createPanelBox(0, 60 - t, 10, 262, 120, 120 + t, materials.carcassOak, 'Bok_vysoka_vnitrni_Z120'));
-            // Dno (Y: 10..11.8 cm -> horní plocha v Y = 12 cm), půda a záda
+            // Dno (Y: 10..12 cm -> horní plocha v Y = 12 cm), půda a záda
             tallCabinetGroup.add(createPanelBox(0, 60 - t, 10, 12, 120 + t, 180 - t, materials.carcassOak, 'Dno_vysoka_Y12'));
             tallCabinetGroup.add(createPanelBox(0, 60 - t, 262 - t, 262, 120 + t, 180 - t, materials.carcassOak, 'Puda_vysoka_Y262'));
             tallCabinetGroup.add(createPanelBox(0, t, 12, 262 - t, 120 + t, 180 - t, materials.carcassOak, 'Zada_vysoka'));
-            // Zapuštěný sokl (Y: 0..10 cm, X: 0..56.5 cm, Z: 120..178.2 cm)
-            tallCabinetGroup.add(createPanelBox(0, 56.5, 0, 10, 120, 180 - t, materials.plinthMaterial, 'Sokl_vysoka'));
 
             // Vnitřní police nad 4 šuplíky: 1. krycí police těsně nad horním šuplíkem (Y = 121 cm, mezera 2 cm),
             // zbývající 3 police rovnoměrně rozmístěny po ~33 cm (Y = 156, 191, 225 cm)
@@ -864,8 +1078,6 @@
             lowerLeftGroup.add(createPanelBox(60 - t, 60, 10, 82, 60 - t, 60 + cf, materials.oakVertical, 'Rohova_lista_L2'));
             // Vnitřní police ve výšce Y = 46 cm
             lowerLeftGroup.add(createPanelBox(t, 56, 46, 46 + t, t, 120 - t, materials.carcassOak, 'Police_spodni_leva'));
-            // Zapuštěný sokl (Y = 0..10 cm)
-            lowerLeftGroup.add(createPanelBox(0, 56.5, 0, 10, 56.5, 120, materials.plinthMaterial, 'Sokl_spodni_leva'));
 
             // JEDNA CELISTVÁ DVEŘE bez dělení (Z = 64..120, Y = 10..82 cm -> 56 × 72 cm), panty vpravo (Z = 64.25) s 4 cm odsazením od rohu, svislá úchytka TULIP IDA 160 mm 50 mm od levé a horní hrany dle kuchyně.pdf
             const lowLeftDoorW = (120 - g) - (60 + cf + g); // 55.5 cm
@@ -934,8 +1146,8 @@
             const lowerRightGroup = new THREE.Group();
             lowerRightGroup.name = 'Spodni_prave_zasuvky_156cm_9ks';
 
-            // Pravý vnější bok (X: 214.2..216 cm) až na podlahu Y = 0 cm
-            lowerRightGroup.add(createPanelBox(216 - t, 216, 0, 82, 0, 60, materials.oakVertical, 'Bok_pravy_vnejsi_X216'));
+            // Pravý vnější bok korpusu (X: 214.2..216 cm, Y: 10..82 cm) – korpus stojí na rektifikačních nožkách v Y = 10 cm
+            lowerRightGroup.add(createPanelBox(216 - t, 216, 10, 82, 0, 60, materials.oakVertical, 'Bok_pravy_vnejsi_X216'));
             // Korpusy 3 modulů po 52 cm (X: 60..214.2 cm, Z: 0..58.2 cm, Y: 10..82 cm)
             lowerRightGroup.add(createPanelBox(60, 216 - t, 10, 10 + t, 0, 60 - t, materials.carcassOak, 'Dno_prave_spodni'));
             lowerRightGroup.add(createPanelBox(60, 216 - t, 82 - t, 82, 0, 60 - t, materials.carcassOak, 'Strop_korpus_prave_spodni'));
@@ -944,8 +1156,6 @@
             [60, 112 - t / 2, 164 - t / 2].forEach((px, idx) => {
                 lowerRightGroup.add(createPanelBox(px, px + t, 10 + t, 82 - t, t, 60 - t, materials.carcassOak, `Pricka_spodni_prava_${idx + 1}`));
             });
-            // Zapuštěný sokl (Y: 0..10 cm, Z: 0..56.5 cm)
-            lowerRightGroup.add(createPanelBox(56.5, 216 - t, 0, 10, 0, 56.5, materials.plinthMaterial, 'Sokl_prave_spodni'));
             // Rohová vymezovací lišta na straně R1 (X: 60..64 cm, Z: 58.2..60.0 cm, Y: 10..82 cm) – plynule navazuje na L2 a lícuje s horní lištou R4
             lowerRightGroup.add(createPanelBox(60, 60 + cf, 10, 82, 60 - t, 60, materials.oakVertical, 'Rohova_lista_R1'));
 
@@ -1111,6 +1321,10 @@
             });
 
             cabinetRoot.add(upperRightGroup);
+
+            // --- 3. PODSTAVEC: 22 REKTIFIKAČNÍCH NOŽEK (100 mm) A 4 NACVAKÁVACÍ KRYCÍ SOKLOVÉ LIŠTY ---
+            buildBaseLegsAndPlinth(materials);
+
             scene.add(cabinetRoot);
         }
 
@@ -1595,6 +1809,30 @@
         }
 
         /**
+         * Přepne viditelnost nacvakávacích krycích soklových lišt (pro zobrazení 22 rektifikačních nožek)
+         */
+        function setPlinthCoversVisible(visible, silent = false) {
+            showPlinthCovers = visible;
+            if (plinthCoversGroup) {
+                plinthCoversGroup.visible = showPlinthCovers;
+            }
+            const badge = document.getElementById('badge-plinth');
+            const btn = document.getElementById('btn-toggle-plinth');
+            if (badge && btn) {
+                badge.textContent = showPlinthCovers ? 'ZAP' : 'VYP';
+                btn.classList.toggle('active', showPlinthCovers);
+                badge.className = showPlinthCovers
+                    ? 'px-2 py-0.5 rounded-md text-[10px] bg-amber-400/20 text-amber-200'
+                    : 'px-2 py-0.5 rounded-md text-[10px] bg-white/10 text-gray-400';
+            }
+            if (!silent) {
+                showToast(showPlinthCovers
+                    ? 'Krycí lišty soklu nasazeny na soklové klipy.'
+                    : 'Krycí lišty soklu odejmuty – viditelných 22 rektifikačních nožek (100 mm).');
+            }
+        }
+
+        /**
          * Plynule přepne kameru na vybranou předvolbu
          */
         function setCameraPreset(presetName) {
@@ -1618,6 +1856,10 @@
                 plan: {
                     pos: new THREE.Vector3(108, 410, 95),
                     target: new THREE.Vector3(108, 40, 88)
+                },
+                plinthDetail: {
+                    pos: new THREE.Vector3(215, 34, 218),
+                    target: new THREE.Vector3(96, 10, 80)
                 }
             };
 
@@ -1627,6 +1869,12 @@
             // Při kliknutí na "Detail levé skříně (4 šuplíky)" ji automaticky otevřeme, pokud je zavřená
             if (presetName === 'leftDrawers' && !isTallOpen) {
                 setTallCabinetAndDrawersState(true);
+            }
+
+            // Při kliknutí na "Detail soklu a nožek" automaticky skryjeme krycí lišty, aby byly nožky ihned vidět
+            if (presetName === 'plinthDetail' && showPlinthCovers) {
+                setPlinthCoversVisible(false, true);
+                showToast('Krycí lišty soklu skryty – detail 22 rektifikačních nožek a klipů.');
             }
 
             cameraAnim = {
@@ -1659,6 +1907,7 @@
                     '# 3D CAD Model Kuchynske a ulozne sestavy - KRONOSPAN K529 HU (Hudson Dub Zlaty)',
                     '# Jednotky: centimetry (cm)',
                     '# Leve rameno: 180 cm | Prave rameno: 216 cm (60 + 156 cm) | Vyska stropu: 262 cm',
+                    '# Podstavec: 22 rektifikacnich nozek (100 mm) + 4 nacvakavaci kryci soklove listy (18 mm) na pohledovych stranach',
                     '# Obsahuje 4 vnitrni zasuvky ve vysoke leve skrini (Y = 13..119 cm) a horni prave skrinky hloubky 40 cm',
                     ''
                 ];
@@ -1906,6 +2155,10 @@
                 badge.className = showDims
                     ? 'px-2 py-0.5 rounded-md text-[10px] bg-amber-400/20 text-amber-200'
                     : 'px-2 py-0.5 rounded-md text-[10px] bg-white/10 text-gray-400';
+            });
+
+            document.getElementById('btn-toggle-plinth').addEventListener('click', () => {
+                setPlinthCoversVisible(!showPlinthCovers);
             });
 
             document.getElementById('btn-toggle-room').addEventListener('click', () => {

@@ -15,7 +15,7 @@ The assembly is an L-shaped floor-to-ceiling cabinet unit placed in a room corne
 | **Ceiling / overall height** (`Y: 0–262 cm`) | **262 cm** | Flush to ceiling |
 | **Lower & left-arm depth** | **60 cm** | Applies to `L1`, `L2`, `L3`, `R1`, `R2`, `R3` |
 | **Upper right-arm depth** | **40 cm** | Applies to `R4`, `R5`, `R6` |
-| **Recessed plinth (sokl)** | **10 cm** | `Y: 0–10 cm`, recessed `3.5 cm` (`56.5 cm` depth); same light **KRONOSPAN K529 HU** oak decor as the cabinets |
+| **Base / pedestal (`sokl`)** | **10 cm on adjustable legs** | `Y: 0–10 cm`: **22 adjustable 100 mm leveling legs** (`rektifikační nožky`) under all base/tall carcasses, with **18 mm clip-on cover boards** (`KRONOSPAN K529 HU`, recessed `3.5 cm`) + `2.5 mm` bottom PVC sealing lip on **visible sides only** (open along wall sides) |
 | **Lower carcass height** | **72 cm** | `Y: 10–82 cm` |
 | **Countertop (pracovní deska)** | **4 cm thick** | `Y: 82–86 cm` — **only dark element** (dark smoked oak / tmavě hnědý kouřový dub) |
 | **Upper cabinets height** (`L3`, `R4`–`R6`) | **111 cm** *(doors)* / **109.5 cm** *(carcass)* | Doors `Y: 151–262 cm`; carcass `Y: 152.5–262 cm` (`15 mm` bottom door overhang) |
@@ -40,8 +40,27 @@ The L-shaped countertop (`4 cm` thick, dark smoked oak) sits directly on top of 
 | **Countertop top surface → Underside of upper cabinets (`L3`, `R4`–`R6`)** | **65 cm** | `Y = 86 cm` to `Y = 151 cm` (bottom edge of overhanging doors; carcass bottom sits `1.5 cm` higher at `Y = 152.5 cm`, i.e., `66.5 cm` above countertop) |
 | **Top of Row 3 lower drawers (`R1`–`R3`) → Underside of countertop** | **0.25 cm (2.5 mm)** | Drawer front top at `Y = 81.75 cm`, countertop bottom at `Y = 82.0 cm` |
 | **Top of Row 3 lower drawers (`R1`–`R3`) → Top surface of countertop** | **4.25 cm** | `0.25 cm` reveal gap + `4.0 cm` countertop thickness (`Y = 81.75` to `86.0 cm`) |
-| **Floor → Top surface of countertop** | **86 cm** | `10 cm` plinth + `72 cm` lower carcass + `4 cm` countertop |
+| **Floor → Top surface of countertop** | **86 cm** | `10 cm` adjustable leg base / plinth + `72 cm` lower carcass + `4 cm` countertop |
 | **Countertop top surface → Top of `L1` internal drawer #4** | **+33 cm above countertop** | `L1` top internal drawer spans `Y = 94–119 cm` (`8 cm` to `33 cm` above the `86 cm` countertop; full drawer zone up to `Y = 120 cm`) |
+
+---
+
+## 2A. Base / Pedestal Construction (`Rektifikační nožky + nacvakávací sokl`)
+
+Instead of a solid wooden pedestal box under the cabinets, all floor-standing carcasses (`L1`, `L2`, `R1`, `R2`, `R3`) stop at **`Y = 10 cm`** and rest on **22 adjustable 100 mm cabinet leveling legs (`rektifikační nožky`)**, closed off from visible room angles by **4 thin `18 mm` clip-on plinth cover boards (`nacvakávací soklové lišty`)**:
+
+- **Adjustable leveling legs (`22 pcs`, `Y: 0–10 cm`):**
+  - Standard European 100 mm ABS/steel leveling feet (top mounting flange `54 × 54 mm` screwed to carcass bottom, `Ø 32 mm` upper barrel, threaded leveling stem with hex collar, `Ø 48 mm` floor footpad).
+  - Distribution by module: **`L1` (4 legs)**, **`L2` (6 legs — extra mid-span pair for the `120 cm` width)**, **`R1` (4 legs)**, **`R2` (4 legs)**, **`R3` (4 legs)**.
+  - Rear legs sit `7 cm` from the back walls; front/outer-end legs sit `51 cm` from back walls (`3.7 cm` behind the back face of the plinth cover boards) and carry **snap-on plinth clips (`soklové klipy`)**.
+- **Visible clip-on plinth cover boards (`4 pcs`, `18 mm` KRONOSPAN K529 HU, horizontal grain):**
+  - Recessed **`3.5 cm`** from all front door/drawer planes and exposed outer ends, with a **`2.5 mm` bottom PVC sealing lip** (`těsnicí lišta`, `Y: 0–0.25 cm`; laminate board `Y: 0.25–10.0 cm`) to block dust/moisture and absorb minor floor unevenness.
+  - **Left arm front cover (`+X`):** `X: 54.7–56.5 cm`, `Z: 56.5–176.5 cm` (`120.0 cm` visible length, clipped to `L1` + `L2` front legs).
+  - **Left outer end return (`+Z`, under `L1`):** `X: 0–54.7 cm`, `Z: 174.7–176.5 cm` (`54.7 cm` board / `56.5 cm` outer face, clipped to `L1` outer legs).
+  - **Right arm front cover (`+Z`):** `X: 54.7–212.5 cm`, `Z: 54.7–56.5 cm` (`157.8 cm` board / `156.0 cm` visible length, clipped to `R1`–`R3` front legs).
+  - **Right outer end return (`+X`, under `R3`):** `X: 210.7–212.5 cm`, `Z: 0–54.7 cm` (`54.7 cm` board / `56.5 cm` outer face, clipped to `R3` outer legs).
+- **Wall-facing sides (`X = 0` and `Z = 0`):** Left completely **open** underneath for ventilation, reduced material/weight, and unobstructed routing of cables/outlets.
+- **CAD Viewer (`model.html`):** Use the **`Krycí lišty soklu (odkrýt nožky)`** toggle or the **`Detail soklu a nožek`** camera preset to hide the clip-on covers and inspect all 22 legs and clips directly.
 
 ---
 
@@ -81,8 +100,8 @@ The L-shaped countertop (`4 cm` thick, dark smoked oak) sits directly on top of 
 
 #### **L1 — Tall Left Cabinet (`Vysoká levá skříň`)**
 - **Overall dimensions:** `60 cm` (W) × `60 cm` (D) × `262 cm` (H)
-  - Plinth: `10 cm` (`Y: 0–10 cm`), carcass: `252 cm` (`Y: 10–262 cm`).
-  - Outer left side panel (`Z: 178.2–180 cm`) runs full height `0–262 cm` to the floor in vertical-grain K529 HU decor.
+  - Base / pedestal: `10 cm` (`Y: 0–10 cm`) on **4 adjustable leveling legs** with recessed clip-on front (`+X`) and outer-left (`+Z`) plinth covers; carcass: `252 cm` (`Y: 10–262 cm`).
+  - Outer left side panel (`Z: 178.2–180 cm`, `X: 0–58.2 cm`) spans carcass height `Y: 10–262 cm` in vertical-grain K529 HU decor, sitting cleanly above the recessed side plinth return.
 - **Door:** 1 full-height solid door (`59.5 × 251.5 cm`, nominal `60 × 252 cm`), vertical grain.
   - **Hinges:** Left side (`Z = 180 cm`), opening `110°` outward to the left so internal drawers clear the door freely.
   - **Handle:** Vertical **TULIP IDA 160 mm** (matte nickel), `50 mm` (`5 cm`) from the right opening edge (`Z ≈ 125 cm`), bottom at `Y = 100 cm` (`Y: 100–116 cm`).
@@ -102,7 +121,7 @@ The L-shaped countertop (`4 cm` thick, dark smoked oak) sits directly on top of 
 
 #### **L2 — Lower Left Corner Cabinet (`Spodní rohová skříňka levá`)**
 - **Overall dimensions:** `120 cm` total carcass width (`56 cm` door `Z: 64–120 cm` + `4 cm` corner filler `Z: 60–64 cm` + `60 cm` corner reach `Z: 0–60 cm` meeting `R1` flush at `X = 60 cm`) × `60 cm` (D) × `82 cm` (H) (`86 cm` with `4 cm` countertop).
-  - Plinth: `10 cm` (`Y: 0–10 cm`), carcass: `72 cm` (`Y: 10–82 cm`).
+  - Base / pedestal: `10 cm` (`Y: 0–10 cm`) on **6 adjustable leveling legs** (including a mid-span pair for the `120 cm` width) with recessed clip-on front plinth cover; carcass: `72 cm` (`Y: 10–82 cm`).
 - **Door:** 1 single solid door (`55.5 × 71.5 cm`, nominal `56 × 72 cm`), vertical grain.
   - **Hinges:** Right side (`Z = 64.25 cm`, offset `4 cm` from the inner corner via the corner filler strip), opening `90°` cleanly with `2.45 cm` clearance from `R1`.
   - **Handle:** Vertical **TULIP IDA 160 mm** (matte nickel), `50 mm` (`5 cm`) from the left opening edge (`Z ≈ 115 cm`) and `50 mm` (`5 cm`) below the top edge (`Y: 60.75–76.75 cm`).
@@ -123,7 +142,7 @@ The L-shaped countertop (`4 cm` thick, dark smoked oak) sits directly on top of 
 Three equal `52 cm` modules (`156 cm` combined width) housing **9 wide external drawers** (`3 columns × 3 rows`) under the `4 cm` countertop. All drawer fronts feature **horizontal wood grain** and horizontal **TULIP IDA 160 mm** matte nickel handles centered horizontally and positioned **`50 mm` (`5 cm`) below the top edge** of each drawer front.
 
 - **Shared vertical drawer layout (`R1`, `R2`, `R3`):**
-  - Plinth: `Y: 0–10 cm` (`10 cm`)
+  - Base / pedestal: `Y: 0–10 cm` (`10 cm`) on **12 adjustable leveling legs** (`4` per module) with a continuous recessed clip-on front plinth cover (`+Z`) and `R3` outer-right side return cover (`+X`)
   - **Row 1 (bottom drawer):** `Y: 10.25–33.75 cm` — front height `23.5 cm` (nominal `24 cm`); handle at `Y = 28.75 cm`
   - **Row 2 (middle drawer):** `Y: 34.25–57.75 cm` — front height `23.5 cm` (nominal `24 cm`); handle at `Y = 52.75 cm`
   - **Row 3 (top drawer):** `Y: 58.25–81.75 cm` — front height `23.5 cm` (nominal `24 cm`); handle at `Y = 76.75 cm`
@@ -140,7 +159,7 @@ Three equal `52 cm` modules (`156 cm` combined width) housing **9 wide external 
 
 #### **R3 — Lower Right Drawer Cabinet 3 (`X: 164–216 cm`)**
 - **Dimensions:** `52 cm` (W) × `60 cm` (D) × `82 cm` (H) (`86 cm` with countertop).
-- **End panel:** Outer right side panel (`X: 214.2–216 cm`, `1.8 cm` thick) runs full height `0–82 cm` to the floor in vertical-grain K529 HU decor.
+- **End panel:** Outer right side panel (`X: 214.2–216 cm`, `1.8 cm` thick) spans carcass height `Y: 10–82 cm` in vertical-grain K529 HU decor, sitting cleanly above the recessed right-end plinth return cover.
 - **Drawer fronts:** `49.7 × 23.5 cm` (`3 pcs`, inset inside the `1.8 cm` outer right end panel).
 
 ---
