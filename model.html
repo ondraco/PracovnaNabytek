@@ -82,22 +82,31 @@
     <!-- 3D Viewport -->
     <div id="canvas-container"></div>
 
-    <!-- Horní hlavička s technickými parametry -->
-    <header class="fixed top-3 left-3 right-3 lg:right-auto z-20 pointer-events-none">
-        <div class="cad-panel rounded-2xl px-4 py-3 pointer-events-auto max-w-2xl">
-            <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-2.5">
-                    <span class="w-4 h-4 rounded-md shrink-0 border border-amber-300/45 shadow-inner"
-                          style="background: linear-gradient(135deg, #c8985e, #986832);"
-                          title="KRONOSPAN K529 HU – Hudson Dub Zlatý"></span>
-                    <h1 class="text-sm sm:text-base font-semibold tracking-tight text-white leading-snug">
-                        3D CAD Konfigurátor – KRONOSPAN K529 HU <span class="text-amber-300/90 font-normal">(Hudson Dub Zlatý)</span>
-                    </h1>
-                </div>
-                <button id="btn-toggle-hud"
-                        class="sm:hidden cad-btn rounded-xl px-2.5 py-1.5 text-xs font-medium bg-white/5 border border-white/10 text-gray-200 shrink-0">
-                    Panel
-                </button>
+    <!-- Plovoucí tlačítko pro zobrazení / skrytí ovládacích panelů (výchozí stav: vše skryto) -->
+    <button id="btn-toggle-hud"
+            type="button"
+            aria-expanded="false"
+            aria-controls="header-panel controls-panel"
+            class="fixed top-3 right-3 z-30 cad-panel cad-btn rounded-xl px-3 py-2 text-xs font-medium text-gray-100 border border-white/15 flex items-center gap-2 shadow-xl">
+        <svg id="icon-hud-open" class="w-4 h-4 text-amber-300 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg id="icon-hud-close" class="w-4 h-4 text-amber-300 shrink-0 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+        <span id="label-toggle-hud">Ovládání</span>
+    </button>
+
+    <!-- Horní hlavička s technickými parametry (výchozí stav: skryto) -->
+    <header id="header-panel" class="hidden fixed top-3 left-3 right-32 lg:right-auto z-20 pointer-events-none">
+        <div class="cad-panel rounded-2xl px-3.5 py-2.5 sm:px-4 sm:py-3 pointer-events-auto max-w-2xl">
+            <div class="flex items-center gap-2.5">
+                <span class="w-4 h-4 rounded-md shrink-0 border border-amber-300/45 shadow-inner"
+                      style="background: linear-gradient(135deg, #c8985e, #986832);"
+                      title="KRONOSPAN K529 HU – Hudson Dub Zlatý"></span>
+                <h1 class="text-xs sm:text-base font-semibold tracking-tight text-white leading-snug">
+                    3D CAD Konfigurátor – KRONOSPAN K529 HU <span class="text-amber-300/90 font-normal">(Hudson Dub Zlatý)</span>
+                </h1>
             </div>
             <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] sm:text-xs text-gray-300 mt-1.5">
                 <span><strong class="text-amber-200/90 font-medium">Levé rameno:</strong> 180 cm</span>
@@ -116,9 +125,9 @@
          class="fixed z-30 pointer-events-none opacity-0 transition-opacity duration-150 cad-panel rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-amber-100 border border-amber-400/35">
     </div>
 
-    <!-- Pravý / Spodní ovládací panel -->
+    <!-- Pravý / Spodní ovládací panel (výchozí stav: skryto) -->
     <aside id="controls-panel"
-           class="fixed bottom-3 left-3 right-3 sm:left-auto sm:top-3 sm:bottom-auto sm:w-80 z-20 cad-panel rounded-2xl p-3.5 max-h-[88vh] overflow-y-auto">
+           class="hidden fixed bottom-3 left-3 right-3 sm:left-auto sm:top-16 sm:right-3 sm:bottom-auto sm:w-80 z-20 cad-panel rounded-2xl p-3.5 max-h-[62vh] sm:max-h-[calc(100vh-5rem)] overflow-y-auto">
         
         <!-- Sekce: Pohledy kamery -->
         <div class="mb-3">
@@ -180,9 +189,9 @@
             <span class="block text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-1.5">CAD vrstvy a export</span>
 
             <button id="btn-toggle-labels"
-                    class="cad-btn active w-full rounded-xl px-3 py-2 text-xs font-medium text-left border border-white/10 flex items-center justify-between">
+                    class="cad-btn w-full rounded-xl px-3 py-2 text-xs font-medium text-left border border-white/10 flex items-center justify-between">
                 <span>Označení skříněk (L1–L3, R1–R6)</span>
-                <span id="badge-labels" class="px-2 py-0.5 rounded-md text-[10px] bg-amber-400/20 text-amber-200">ZAP</span>
+                <span id="badge-labels" class="px-2 py-0.5 rounded-md text-[10px] bg-white/10 text-gray-400">VYP</span>
             </button>
 
             <button id="btn-toggle-dims"
@@ -272,7 +281,7 @@
         let isAllOpen = false;
         let showDims = true;
         let showRoom = true;
-        let showLabels = true;
+        let showLabels = false;
         let showPlinthCovers = true;
 
         const raycaster = new THREE.Raycaster();
@@ -1725,6 +1734,7 @@
                 labelsGroup.add(sprite);
             });
 
+            labelsGroup.visible = showLabels;
             scene.add(labelsGroup);
         }
 
@@ -2175,17 +2185,34 @@
 
             document.getElementById('btn-export-obj').addEventListener('click', exportToOBJ);
 
-            // Mobilní přepínač panelu
+            // Přepínač ovládacích panelů (výchozí stav: vše skryto pro čistý 3D náhled i na mobilu)
             const btnHud = document.getElementById('btn-toggle-hud');
-            const panel = document.getElementById('controls-panel');
-            let hudHidden = false;
-            if (btnHud && panel) {
-                btnHud.addEventListener('click', () => {
-                    hudHidden = !hudHidden;
-                    panel.style.display = hudHidden ? 'none' : 'block';
-                    btnHud.textContent = hudHidden ? 'Zobrazit' : 'Panel';
-                });
+            const headerPanel = document.getElementById('header-panel');
+            const controlsPanel = document.getElementById('controls-panel');
+            const labelHud = document.getElementById('label-toggle-hud');
+            const iconHudOpen = document.getElementById('icon-hud-open');
+            const iconHudClose = document.getElementById('icon-hud-close');
+            let hudVisible = false;
+
+            function setHudVisible(visible) {
+                hudVisible = visible;
+                if (headerPanel) headerPanel.classList.toggle('hidden', !hudVisible);
+                if (controlsPanel) controlsPanel.classList.toggle('hidden', !hudVisible);
+                if (btnHud) {
+                    btnHud.setAttribute('aria-expanded', String(hudVisible));
+                    btnHud.classList.toggle('active', hudVisible);
+                }
+                if (labelHud) labelHud.textContent = hudVisible ? 'Skrýt' : 'Ovládání';
+                if (iconHudOpen) iconHudOpen.classList.toggle('hidden', hudVisible);
+                if (iconHudClose) iconHudClose.classList.toggle('hidden', !hudVisible);
             }
+
+            if (btnHud) {
+                btnHud.addEventListener('click', () => setHudVisible(!hudVisible));
+            }
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && hudVisible) setHudVisible(false);
+            });
 
             // Interakce myší / dotykem ve 3D scéně
             const domEl = renderer.domElement;
