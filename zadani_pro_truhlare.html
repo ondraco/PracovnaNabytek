@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zadání pro truhláře – Vestavěná sestava do pracovny (KRONOSPAN K529 HU)</title>
+    <style>
+        :root {
+            --oak: #8c5a2b;
+            --oak-light: #f7f1e8;
+            --oak-mid: #ebd9c3;
+            --dark-oak: #4a2e17;
+            --slate: #1f252e;
+            --muted: #5a6370;
+            --border: #d8dce3;
+            --accent: #2b6cb0;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 20px 14px 48px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 13px;
+            line-height: 1.45;
+            color: var(--slate);
+            background: #eef0f4;
+        }
+        .toolbar {
+            max-width: 210mm;
+            margin: 0 auto 12px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .print-btn {
+            appearance: none;
+            border: 1px solid var(--oak);
+            background: var(--oak);
+            color: #fff;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+        }
+        .print-btn:hover { background: #754920; }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--slate);
+            font-weight: 600;
+            font-size: 13px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+        }
+        .nav-btn:hover {
+            border-color: var(--oak);
+            color: var(--oak);
+        }
+        .page {
+            max-width: 210mm;
+            margin: 0 auto 16px;
+            background: #fff;
+            padding: 14mm 15mm;
+            border-radius: 6px;
+            box-shadow: 0 6px 26px rgba(15, 23, 42, 0.08);
+        }
+        .header-box {
+            background: var(--oak-light);
+            border: 1px solid rgba(140, 90, 43, 0.35);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+        }
+        .header-box h1 {
+            margin: 0 0 3px;
+            font-size: 19px;
+            color: var(--slate);
+            letter-spacing: -0.01em;
+        }
+        .header-meta {
+            font-size: 12px;
+            color: var(--muted);
+        }
+        .header-meta strong { color: var(--slate); }
+        .header-meta .dark-oak { color: var(--dark-oak); font-weight: 700; }
+        .intro-note {
+            font-size: 11.8px;
+            color: var(--muted);
+            font-style: italic;
+            margin: 0 0 12px;
+        }
+        h2 {
+            font-size: 14px;
+            color: var(--slate);
+            margin: 13px 0 8px;
+            padding-bottom: 3px;
+            border-bottom: 1.5px solid var(--oak);
+            page-break-after: avoid;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            gap: 14px;
+            align-items: start;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11.8px;
+        }
+        th, td {
+            text-align: left;
+            padding: 4.5px 6px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+        th {
+            font-weight: 700;
+            color: var(--slate);
+            border-bottom: 1.5px solid var(--slate);
+            background: #fafbfc;
+        }
+        td.dim {
+            font-weight: 700;
+            white-space: nowrap;
+            color: var(--slate);
+        }
+        .spec-list {
+            margin: 0;
+            padding-left: 16px;
+            font-size: 12px;
+        }
+        .spec-list li { margin-bottom: 5px; }
+        .diagrams-2 {
+            display: grid;
+            grid-template-columns: 1.25fr 0.75fr;
+            gap: 12px;
+            align-items: stretch;
+        }
+        .diagrams-equal {
+            display: grid;
+            grid-template-columns: 1.12fr 0.88fr;
+            gap: 12px;
+            align-items: stretch;
+        }
+        .diagram-card {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 10px 6px;
+            background: #fcfcfd;
+            display: flex;
+            flex-direction: column;
+            page-break-inside: avoid;
+        }
+        .diagram-title {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--slate);
+            margin-bottom: 2px;
+        }
+        .diagram-sub {
+            font-size: 10.5px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+        .diagram-card svg {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: auto 0;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 6px;
+            font-size: 10.5px;
+            color: var(--muted);
+        }
+        .legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .swatch {
+            width: 11px;
+            height: 11px;
+            border-radius: 2px;
+            display: inline-block;
+            border: 1px solid #8c5a2b;
+        }
+        .note-box {
+            background: #f8f9fb;
+            border-left: 3px solid var(--oak);
+            padding: 9px 13px;
+            border-radius: 0 6px 6px 0;
+            margin-top: 10px;
+            font-size: 11.8px;
+            page-break-inside: avoid;
+        }
+        .note-box ul {
+            margin: 0;
+            padding-left: 16px;
+        }
+        .note-box li { margin-bottom: 3px; }
+        .note-box li:last-child { margin-bottom: 0; }
+        .page-break { page-break-before: always; break-before: page; }
+
+        @page {
+            size: A4;
+            margin: 11mm 12mm;
+        }
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+                font-size: 11.5px;
+            }
+            .toolbar { display: none !important; }
+            .page {
+                max-width: none;
+                padding: 0;
+                margin: 0;
+                box-shadow: none;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <a class="nav-btn" href="model.html">← Zpět na 3D model</a>
+        <button class="print-btn" onclick="window.print()">Tisk / Uložit jako PDF</button>
+    </div>
+
+    <!-- ===================== STRANA 1 ===================== -->
+    <section class="page">
+        <div class="header-box">
+            <h1>Zadání pro truhláře – Vestavěná sestava do pracovny</h1>
+            <div class="header-meta">
+                Rohová sestava ve tvaru „L“ až ke stropu (<strong>180 × 216 × 262 cm</strong>) &nbsp;|&nbsp;
+                Dekor: <strong>KRONOSPAN K529 HU (Hudson Dub Zlatý)</strong> &nbsp;|&nbsp;
+                Pracovní deska: <span class="dark-oak">tmavě hnědý kouřový dub</span>
+            </div>
+        </div>
+
+        <p class="intro-note">
+            Přehled dispozice, hlavních rozměrů, materiálů a vnitřního členění. Technické detaily (značka kování, tloušťky zad, přesné spáry, kotvení, řešení u stropu a stěn) necháváme na Vašem odborném posouzení a zaměření na místě. K dispozici je také interaktivní 3D náhled (<a href="model.html" style="color: var(--oak); font-weight: 600;"><code>model.html</code></a>).
+        </p>
+
+        <h2>1. Základní rozměry, materiály a provedení</h2>
+        <div class="summary-grid">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parametr</th>
+                        <th>Rozměr</th>
+                        <th>Poznámka</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Levé rameno</td><td class="dim">180 cm</td><td>60 cm (L1) + 120 cm (L2, L3)</td></tr>
+                    <tr><td>Pravé rameno</td><td class="dim">216 cm</td><td>60 cm roh + 3 × 52 cm</td></tr>
+                    <tr><td>Celková výška</td><td class="dim">262 cm</td><td>Až ke stropu</td></tr>
+                    <tr><td>Hloubka spodní / levá</td><td class="dim">60 cm</td><td>L1, L2, L3, R1–R3</td></tr>
+                    <tr><td>Hloubka horní pravá</td><td class="dim">40 cm</td><td>R4, R5, R6</td></tr>
+                    <tr><td>Sokl (na nožkách)</td><td class="dim">10 cm</td><td>Zapuštění cca 3,5 cm</td></tr>
+                    <tr><td>Pracovní deska</td><td class="dim">86 cm</td><td>10 sokl + 72 korpus + 4 deska</td></tr>
+                    <tr><td>Mezera nad deskou</td><td class="dim">65 cm</td><td>Deska 86 → dvířka 151 cm</td></tr>
+                    <tr><td>Horní skříňky</td><td class="dim">111 cm</td><td>Dvířka 151–262 cm (přesah 15 mm)</td></tr>
+                </tbody>
+            </table>
+
+            <ul class="spec-list">
+                <li><strong>Dekor korpusů, dvířek, zásuvek a soklu:</strong> lamino <strong>KRONOSPAN K529 HU – Hudson Dub Zlatý</strong> (tl. 18 mm, ABS hrany v dekoru).</li>
+                <li><strong>Pracovní deska (tl. 4 cm):</strong> <strong>tmavě hnědý kouřový dub</strong> (jediný tmavý prvek), tvar „L“ přes L2 a R1–R3 (např. 216 × 60 cm a navazující díl 60 × 60 cm, čelní přesah cca 4 mm).</li>
+                <li><strong>Úchytky (L1, L2, R1–R3):</strong> <strong>TULIP IDA 160 mm (DS231423), nikl matný</strong>.
+                    Zásuvky R1–R3 vodorovně (cca 5 cm od horní hrany), L2 svisle (cca 5 cm od horní a levé hrany), L1 svisle (spodní konec úchytky v cca 100 cm od podlahy).</li>
+                <li><strong>Horní skříňky (L3, R4–R6):</strong> <strong>bezúchytkové</strong> – otevírání spodním přesahem dvířek cca <strong>15 mm</strong> pod dno korpusu.</li>
+                <li><strong>Podstavec / sokl:</strong> 10 cm <strong>rektifikační nožky</strong> + <strong>nacvakávací krycí soklové lišty</strong> (v dekoru K529 HU se spodní těsnicí lištou) pouze z pohledových stran; u stěn otevřeno.</li>
+                <li><strong>Kování:</strong> panty a plnovýsuvy s tlumeným dovíráním (dle Vašeho standardu); u <strong>L1</strong> panty s nulovým přesahem (<strong>155°/165°</strong>) nebo min. <strong>110°</strong> s <strong>2,5 cm vymezovací lištou</strong> na straně pantů (5–6 pantů) pro volný výsuv 4 vnitřních zásuvek.</li>
+            </ul>
+        </div>
+
+        <h2>2. Půdorys a boční řez (hloubka 60 vs. 40 cm, podstavec na nožkách)</h2>
+        <div class="diagrams-2">
+            <!-- VÝKRES 1: PŮDORYS -->
+            <div class="diagram-card">
+                <div class="diagram-title">Výkres 1 – Půdorys sestavy (rozměry v cm)</div>
+                <div class="diagram-sub">Zobrazeno otevírání dvířek L1 (110°) a L2 (90°), hloubka horních skříněk 40 cm a rohové lišty</div>
+                <svg viewBox="-46 -38 308 256" aria-label="Půdorys sestavy">
+                    <defs>
+                        <pattern id="hatchCorner" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                            <line x1="0" y1="0" x2="0" y2="6" stroke="#c9b49c" stroke-width="1.2"/>
+                        </pattern>
+                        <marker id="arr" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                            <path d="M1,1 L7,4 L1,7 z" fill="#5a6370"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Stěny -->
+                    <polyline points="0,186 0,0 222,0" fill="none" stroke="#1f252e" stroke-width="3.2"/>
+                    <text x="-8" y="-6" font-size="8.5" fill="#5a6370" text-anchor="end">roh stěn</text>
+
+                    <!-- Skříňky (hloubka 60) -->
+                    <rect x="0" y="0" width="60" height="120" fill="#f7f1e8" stroke="#8c5a2b" stroke-width="1.4"/>
+                    <rect x="0" y="0" width="60" height="60" fill="url(#hatchCorner)" stroke="none"/>
+                    <rect x="0" y="120" width="60" height="60" fill="#ebd9c3" stroke="#8c5a2b" stroke-width="1.4"/>
+                    <rect x="60" y="0" width="52" height="60" fill="#f7f1e8" stroke="#8c5a2b" stroke-width="1.4"/>
+                    <rect x="112" y="0" width="52" height="60" fill="#f7f1e8" stroke="#8c5a2b" stroke-width="1.4"/>
+                    <rect x="164" y="0" width="52" height="60" fill="#f7f1e8" stroke="#8c5a2b" stroke-width="1.4"/>
+
+                    <!-- Rohové lišty (L2: 6 cm, R1: 4 cm) -->
+                    <rect x="57" y="60" width="3" height="6" fill="#8c5a2b"/>
+                    <rect x="60" y="57" width="4" height="3" fill="#8c5a2b"/>
+
+                    <!-- Přerušovaná čára horních R4–R6 (hloubka 40 cm) -->
+                    <line x1="60" y1="40" x2="216" y2="40" stroke="#2b6cb0" stroke-width="1.5" stroke-dasharray="4 3"/>
+                    <text x="213" y="54" text-anchor="end" font-size="8.5" font-weight="600" fill="#2b6cb0">horní R4–R6 (hl. 40)</text>
+
+                    <!-- Oblouky otevírání dvířek L1 (110°) a L2 (90°) -->
+                    <path d="M 60 120 A 60 60 0 0 1 116.4 200.5 L 60 180" fill="none" stroke="#8c5a2b" stroke-width="1" stroke-dasharray="3 2.5"/>
+                    <text x="113" y="168" font-size="8.5" fill="#8c5a2b">L1 (110°)</text>
+                    <path d="M 60 120 A 54 54 0 0 0 114 66 L 60 66" fill="none" stroke="#8c5a2b" stroke-width="1" stroke-dasharray="3 2.5"/>
+                    <text x="103" y="108" font-size="8.5" fill="#8c5a2b">L2 (90°)</text>
+
+                    <!-- Šipky výsuvu zásuvek R1–R3 -->
+                    <line x1="88" y1="62" x2="88" y2="75" stroke="#5a6370" stroke-width="1" marker-end="url(#arr)"/>
+                    <line x1="138" y1="62" x2="138" y2="75" stroke="#5a6370" stroke-width="1" marker-end="url(#arr)"/>
+                    <line x1="190" y1="62" x2="190" y2="75" stroke="#5a6370" stroke-width="1" marker-end="url(#arr)"/>
+                    <text x="164" y="85" text-anchor="middle" font-size="8.5" fill="#5a6370">9 vnějších zásuvek (3 × 3)</text>
+
+                    <!-- Popisky modulů -->
+                    <text x="30" y="147" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1f252e">L1</text>
+                    <text x="30" y="159" text-anchor="middle" font-size="8.2" fill="#5a6370">vysoká 262</text>
+                    <text x="30" y="170" text-anchor="middle" font-size="7.8" fill="#5a6370">4 šupl. + 4 pol.</text>
+
+                    <text x="30" y="88" text-anchor="middle" font-size="11" font-weight="700" fill="#1f252e">L2 / L3</text>
+                    <text x="30" y="100" text-anchor="middle" font-size="8" fill="#5a6370">rohová 120</text>
+                    <text x="30" y="33" text-anchor="middle" font-size="8" fill="#5a6370">slepý roh</text>
+
+                    <text x="86" y="23" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1f252e">R1 / R4</text>
+                    <text x="138" y="23" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1f252e">R2 / R5</text>
+                    <text x="190" y="23" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1f252e">R3 / R6</text>
+
+                    <!-- Horní kóty (X: 0..216) -->
+                    <line x1="0" y1="-11" x2="60" y2="-11" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr)" marker-end="url(#arr)"/>
+                    <text x="30" y="-14" text-anchor="middle" font-size="9" fill="#1f252e">60</text>
+                    <line x1="60" y1="-11" x2="112" y2="-11" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr)" marker-end="url(#arr)"/>
+                    <text x="86" y="-14" text-anchor="middle" font-size="9" fill="#1f252e">52</text>
+                    <line x1="112" y1="-11" x2="164" y2="-11" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr)" marker-end="url(#arr)"/>
+                    <text x="138" y="-14" text-anchor="middle" font-size="9" fill="#1f252e">52</text>
+                    <line x1="164" y1="-11" x2="216" y2="-11" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr)" marker-end="url(#arr)"/>
+                    <text x="190" y="-14" text-anchor="middle" font-size="9" fill="#1f252e">52</text>
+                    <line x1="0" y1="-25" x2="216" y2="-25" stroke="#8c5a2b" stroke-width="1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+                    <text x="108" y="-28" text-anchor="middle" font-size="10" font-weight="700" fill="#8c5a2b">216 cm (pravé rameno)</text>
+
+                    <!-- Levé kóty (Z: 0..180) -->
+                    <line x1="-13" y1="0" x2="-13" y2="120" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr)" marker-end="url(#arr)"/>
+                    <text x="-17" y="60" text-anchor="middle" font-size="9" fill="#1f252e" transform="rotate(-90 -17 60)">120</text>
+                    <line x1="-13" y1="120" x2="-13" y2="180" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr)" marker-end="url(#arr)"/>
+                    <text x="-17" y="150" text-anchor="middle" font-size="9" fill="#1f252e" transform="rotate(-90 -17 150)">60</text>
+                    <line x1="-30" y1="0" x2="-30" y2="180" stroke="#8c5a2b" stroke-width="1" marker-start="url(#arr)" marker-end="url(#arr)"/>
+                    <text x="-35" y="90" text-anchor="middle" font-size="10" font-weight="700" fill="#8c5a2b" transform="rotate(-90 -35 90)">180 cm (levé rameno)</text>
+
+                    <!-- Spodní a pravá hloubková kóta -->
+                    <line x1="0" y1="194" x2="60" y2="194" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr)" marker-end="url(#arr)"/>
+                    <text x="30" y="205" text-anchor="middle" font-size="9.5" font-weight="600" fill="#1f252e">60 cm</text>
+
+                    <line x1="227" y1="0" x2="227" y2="40" stroke="#2b6cb0" stroke-width="0.9" marker-start="url(#arr)" marker-end="url(#arr)"/>
+                    <text x="236" y="20" text-anchor="middle" font-size="9" font-weight="600" fill="#2b6cb0" transform="rotate(90 236 20)">40</text>
+                    <line x1="246" y1="0" x2="246" y2="60" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr)" marker-end="url(#arr)"/>
+                    <text x="255" y="30" text-anchor="middle" font-size="9" font-weight="600" fill="#1f252e" transform="rotate(90 255 30)">60 cm</text>
+                </svg>
+            </div>
+
+            <!-- VÝKRES 2: BOČNÍ ŘEZ PRAVÝM RAMENEM -->
+            <div class="diagram-card">
+                <div class="diagram-title">Výkres 2 – Boční řez (pravé rameno)</div>
+                <div class="diagram-sub">Hloubky 60 / 40 cm, nožky + sokl, přesah 15 mm</div>
+                <svg viewBox="-16 -24 148 310" aria-label="Boční řez pravým ramenem">
+                    <defs>
+                        <marker id="arr2" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                            <path d="M1,1 L7,4 L1,7 z" fill="#5a6370"/>
+                        </marker>
+                    </defs>
+                    <!-- Stěna, strop, podlaha -->
+                    <line x1="0" y1="0" x2="0" y2="262" stroke="#1f252e" stroke-width="2.5"/>
+                    <line x1="-6" y1="0" x2="72" y2="0" stroke="#9aa3b0" stroke-width="1" stroke-dasharray="4 3"/>
+                    <line x1="-6" y1="262" x2="78" y2="262" stroke="#1f252e" stroke-width="2"/>
+
+                    <!-- Horní skříňka hl. 40 cm (korpus Y 152.5..262 -> y 0..109.5, dvířka Y 151..262 -> y 0..111) -->
+                    <rect x="0" y="0" width="38" height="109.5" fill="#f7f1e8" stroke="#8c5a2b" stroke-width="1.3"/>
+                    <line x1="2" y1="37" x2="36" y2="37" stroke="#8c5a2b" stroke-width="1.2"/>
+                    <line x1="2" y1="74" x2="36" y2="74" stroke="#8c5a2b" stroke-width="1.2"/>
+                    <!-- Dvířka s přesahem 15 mm -->
+                    <rect x="38" y="0" width="2.4" height="111" fill="#8c5a2b"/>
+                    <text x="19" y="58" text-anchor="middle" font-size="8.5" fill="#5a6370">2 police</text>
+                    <!-- Detail přesahu 15 mm -->
+                    <line x1="41" y1="111" x2="54" y2="117" stroke="#2b6cb0" stroke-width="0.9"/>
+                    <text x="55" y="120" font-size="8" font-weight="700" fill="#2b6cb0">přesah 15 mm</text>
+                    <text x="55" y="129" font-size="7.5" fill="#5a6370">(bez úchytky)</text>
+
+                    <!-- Pracovní deska 4 cm (Y 82..86 -> y 176..180) -->
+                    <rect x="0" y="176" width="60.5" height="4.5" fill="#4a2e17"/>
+                    <text x="30" y="172" text-anchor="middle" font-size="8" font-weight="700" fill="#4a2e17">deska tl. 4 cm</text>
+
+                    <!-- Spodní skříňka hl. 60 cm (Y 10..82 -> y 180..252) -->
+                    <rect x="0" y="180" width="58" height="72" fill="#f7f1e8" stroke="#8c5a2b" stroke-width="1.3"/>
+                    <rect x="58" y="180.5" width="2.2" height="23" fill="#8c5a2b"/>
+                    <rect x="58" y="204.5" width="2.2" height="23" fill="#8c5a2b"/>
+                    <rect x="58" y="228.5" width="2.2" height="23" fill="#8c5a2b"/>
+                    <!-- Úchytky -->
+                    <rect x="60.2" y="185" width="2.6" height="1.5" fill="#5a6370"/>
+                    <rect x="60.2" y="209" width="2.6" height="1.5" fill="#5a6370"/>
+                    <rect x="60.2" y="233" width="2.6" height="1.5" fill="#5a6370"/>
+                    <text x="29" y="219" text-anchor="middle" font-size="8.5" fill="#5a6370">3 zásuvky</text>
+
+                    <!-- Rektifikační nožky (Y 0..10 -> y 252..262) + nacvakávací krycí sokl (zapuštěn 3.5 cm) -->
+                    <!-- Zadní nožka -->
+                    <rect x="5.5" y="252" width="3" height="10" fill="#3a414d"/>
+                    <rect x="4" y="260.5" width="6" height="1.5" fill="#1f252e"/>
+                    <!-- Přední nožka + klip -->
+                    <rect x="49.5" y="252" width="3" height="10" fill="#3a414d"/>
+                    <rect x="48" y="260.5" width="6" height="1.5" fill="#1f252e"/>
+                    <line x1="52.5" y1="255.5" x2="54.7" y2="255.5" stroke="#3a414d" stroke-width="1.5"/>
+                    <!-- Tenký nacvakávací krycí sokl 18 mm -->
+                    <rect x="54.7" y="252" width="2" height="10" fill="#8c5a2b"/>
+                    <text x="27" y="259" text-anchor="middle" font-size="7.2" fill="#5a6370">nožky (otevřeno)</text>
+
+                    <!-- Hloubkové kóty -->
+                    <line x1="0" y1="-10" x2="40" y2="-10" stroke="#2b6cb0" stroke-width="0.9" marker-start="url(#arr2)" marker-end="url(#arr2)"/>
+                    <text x="20" y="-14" text-anchor="middle" font-size="9" font-weight="700" fill="#2b6cb0">40 cm</text>
+
+                    <line x1="0" y1="274" x2="60" y2="274" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr2)" marker-end="url(#arr2)"/>
+                    <text x="30" y="284" text-anchor="middle" font-size="9" font-weight="700" fill="#1f252e">60 cm</text>
+
+                    <!-- Výškové kóty vpravo -->
+                    <line x1="78" y1="0" x2="78" y2="111" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr2)" marker-end="url(#arr2)"/>
+                    <text x="82" y="58" font-size="9" fill="#1f252e">111</text>
+
+                    <line x1="78" y1="111" x2="78" y2="176" stroke="#2b6cb0" stroke-width="0.9" marker-start="url(#arr2)" marker-end="url(#arr2)"/>
+                    <text x="82" y="147" font-size="9" font-weight="700" fill="#2b6cb0">65</text>
+
+                    <line x1="78" y1="176" x2="78" y2="252" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr2)" marker-end="url(#arr2)"/>
+                    <text x="82" y="218" font-size="9" fill="#1f252e">76</text>
+
+                    <line x1="78" y1="252" x2="78" y2="262" stroke="#5a6370" stroke-width="0.9"/>
+                    <text x="82" y="261" font-size="8.5" fill="#1f252e">10</text>
+
+                    <line x1="106" y1="0" x2="106" y2="262" stroke="#8c5a2b" stroke-width="1" marker-start="url(#arr2)" marker-end="url(#arr2)"/>
+                    <text x="115" y="131" text-anchor="middle" font-size="10" font-weight="700" fill="#8c5a2b" transform="rotate(90 115 131)">262 cm</text>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== STRANA 2 ===================== -->
+    <section class="page page-break">
+        <h2 style="margin-top:0;">3. Čelní pohledy obou ramen (dvířka, zásuvky, úchytky a směry otevírání)</h2>
+        <div class="diagrams-equal">
+            <!-- VÝKRES 3: ČELNÍ POHLED PRAVÉ RAMENO -->
+            <div class="diagram-card">
+                <div class="diagram-title">Výkres 3 – Čelní pohled: Pravé rameno (216 × 262 cm)</div>
+                <div class="diagram-sub">R1–R3 zásuvky (TULIP IDA 160 mm vodorovně), R4–R6 dvířka bez úchytek</div>
+                <svg viewBox="-14 -34 294 320" aria-label="Čelní pohled pravé rameno">
+                    <defs>
+                        <marker id="arr3" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                            <path d="M1,1 L7,4 L1,7 z" fill="#5a6370"/>
+                        </marker>
+                    </defs>
+                    <!-- Strop a podlaha -->
+                    <line x1="-6" y1="0" x2="226" y2="0" stroke="#9aa3b0" stroke-width="1" stroke-dasharray="4 3"/>
+                    <line x1="-6" y1="262" x2="226" y2="262" stroke="#1f252e" stroke-width="2"/>
+
+                    <!-- Bok levého ramena (X: 0..60) -->
+                    <rect x="0" y="0" width="60" height="252" fill="#ebd9c3" stroke="#8c5a2b" stroke-width="1.3"/>
+                    <text x="30" y="122" text-anchor="middle" font-size="10" font-weight="700" fill="#1f252e">Bok L1</text>
+                    <text x="30" y="135" text-anchor="middle" font-size="8.5" fill="#5a6370">(hl. 60 cm)</text>
+
+                    <!-- Zapuštěný krycí sokl (boční L1: 0..56.5, přední R1–R3: 56.5..212.5) -->
+                    <rect x="0" y="252" width="56.5" height="10" fill="#ebd9c3" stroke="#8c5a2b" stroke-width="1"/>
+                    <rect x="56.5" y="252" width="156" height="10" fill="#f7f1e8" stroke="#8c5a2b" stroke-width="1"/>
+                    <text x="136" y="260" text-anchor="middle" font-size="7.5" fill="#5a6370">sokl 10 cm (na nožkách, zapuštěn 3,5 cm)</text>
+
+                    <!-- Spodní R1–R3 (Y: 10..82 -> y: 180..252) -->
+                    <!-- Rohová lišta R1 (4 cm) -->
+                    <rect x="60" y="180" width="4" height="72" fill="#dfcbb4" stroke="#8c5a2b" stroke-width="1"/>
+                    <!-- Sloupce zásuvek -->
+                    <g fill="#f7f1e8" stroke="#8c5a2b" stroke-width="1.2">
+                        <rect x="64" y="180" width="48" height="24"/>
+                        <rect x="64" y="204" width="48" height="24"/>
+                        <rect x="64" y="228" width="48" height="24"/>
+
+                        <rect x="112" y="180" width="52" height="24"/>
+                        <rect x="112" y="204" width="52" height="24"/>
+                        <rect x="112" y="228" width="52" height="24"/>
+
+                        <rect x="164" y="180" width="52" height="24"/>
+                        <rect x="164" y="204" width="52" height="24"/>
+                        <rect x="164" y="228" width="52" height="24"/>
+                    </g>
+                    <!-- Úchytky TULIP IDA 160 mm (vodorovně, 5 cm pod horní hranou) -->
+                    <g fill="#5a6370">
+                        <rect x="80" y="184.5" width="16" height="1.8" rx="0.7"/>
+                        <rect x="80" y="208.5" width="16" height="1.8" rx="0.7"/>
+                        <rect x="80" y="232.5" width="16" height="1.8" rx="0.7"/>
+                        <rect x="130" y="184.5" width="16" height="1.8" rx="0.7"/>
+                        <rect x="130" y="208.5" width="16" height="1.8" rx="0.7"/>
+                        <rect x="130" y="232.5" width="16" height="1.8" rx="0.7"/>
+                        <rect x="182" y="184.5" width="16" height="1.8" rx="0.7"/>
+                        <rect x="182" y="208.5" width="16" height="1.8" rx="0.7"/>
+                        <rect x="182" y="232.5" width="16" height="1.8" rx="0.7"/>
+                    </g>
+                    <text x="88" y="221" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1f252e">R1</text>
+                    <text x="138" y="221" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1f252e">R2</text>
+                    <text x="190" y="221" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1f252e">R3</text>
+
+                    <!-- Pracovní deska 4 cm -->
+                    <rect x="60" y="176" width="157" height="4.4" fill="#4a2e17"/>
+                    <text x="138" y="169" text-anchor="middle" font-size="8.2" font-weight="700" fill="#4a2e17">pracovní deska tl. 4 cm (kouřový dub)</text>
+
+                    <!-- Horní R4–R6 (Y: 151..262 -> y: 0..111) -->
+                    <rect x="60" y="0" width="4" height="111" fill="#dfcbb4" stroke="#8c5a2b" stroke-width="1"/>
+                    <g fill="#f7f1e8" stroke="#8c5a2b" stroke-width="1.2">
+                        <rect x="64" y="0" width="48" height="111"/>
+                        <rect x="112" y="0" width="52" height="111"/>
+                        <rect x="164" y="0" width="52" height="111"/>
+                    </g>
+                    <!-- Přerušovaná linka dna korpusu (přesah 15 mm) -->
+                    <line x1="64" y1="109" x2="216" y2="109" stroke="#2b6cb0" stroke-width="0.9" stroke-dasharray="3 2"/>
+                    <!-- Směry otevírání (trojúhelník směřuje k pantu) -->
+                    <g fill="none" stroke="#9aa3b0" stroke-width="0.8" stroke-dasharray="3 2.5">
+                        <!-- R4: panty vlevo -->
+                        <polyline points="112,0 64,55.5 112,111"/>
+                        <!-- R5: panty vlevo -->
+                        <polyline points="164,0 112,55.5 164,111"/>
+                        <!-- R6: panty vpravo -->
+                        <polyline points="164,0 216,55.5 164,111"/>
+                    </g>
+                    <text x="88" y="59" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1f252e">R4</text>
+                    <text x="138" y="59" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1f252e">R5</text>
+                    <text x="190" y="59" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1f252e">R6</text>
+                    <text x="138" y="122" text-anchor="middle" font-size="8" font-weight="600" fill="#2b6cb0">bezúchytkové (spodní přesah 15 mm)</text>
+
+                    <!-- Horní kóty -->
+                    <line x1="0" y1="-10" x2="60" y2="-10" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr3)" marker-end="url(#arr3)"/>
+                    <text x="30" y="-13" text-anchor="middle" font-size="8.5" fill="#1f252e">60</text>
+                    <text x="62" y="-13" text-anchor="middle" font-size="7.5" fill="#8c5a2b">4</text>
+                    <line x1="64" y1="-10" x2="112" y2="-10" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr3)" marker-end="url(#arr3)"/>
+                    <text x="88" y="-13" text-anchor="middle" font-size="8.5" fill="#1f252e">48</text>
+                    <line x1="112" y1="-10" x2="164" y2="-10" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr3)" marker-end="url(#arr3)"/>
+                    <text x="138" y="-13" text-anchor="middle" font-size="8.5" fill="#1f252e">52</text>
+                    <line x1="164" y1="-10" x2="216" y2="-10" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr3)" marker-end="url(#arr3)"/>
+                    <text x="190" y="-13" text-anchor="middle" font-size="8.5" fill="#1f252e">52</text>
+                    <line x1="0" y1="-24" x2="216" y2="-24" stroke="#8c5a2b" stroke-width="1" marker-start="url(#arr3)" marker-end="url(#arr3)"/>
+                    <text x="108" y="-27" text-anchor="middle" font-size="9.5" font-weight="700" fill="#8c5a2b">216 cm</text>
+
+                    <!-- Pravé výškové kóty -->
+                    <line x1="229" y1="0" x2="229" y2="111" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr3)" marker-end="url(#arr3)"/>
+                    <text x="233" y="59" font-size="8.8" fill="#1f252e">111</text>
+                    <line x1="229" y1="111" x2="229" y2="176" stroke="#2b6cb0" stroke-width="0.9" marker-start="url(#arr3)" marker-end="url(#arr3)"/>
+                    <text x="233" y="147" font-size="8.8" font-weight="700" fill="#2b6cb0">65</text>
+                    <line x1="229" y1="176" x2="229" y2="262" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr3)" marker-end="url(#arr3)"/>
+                    <text x="233" y="222" font-size="8.8" fill="#1f252e">86</text>
+                    <line x1="256" y1="0" x2="256" y2="262" stroke="#8c5a2b" stroke-width="1" marker-start="url(#arr3)" marker-end="url(#arr3)"/>
+                    <text x="266" y="131" text-anchor="middle" font-size="9.5" font-weight="700" fill="#8c5a2b" transform="rotate(90 266 131)">262 cm</text>
+                </svg>
+            </div>
+
+            <!-- VÝKRES 4: ČELNÍ POHLED LEVÉ RAMENO -->
+            <div class="diagram-card">
+                <div class="diagram-title">Výkres 4 – Čelní pohled: Levé rameno (180 × 262 cm)</div>
+                <div class="diagram-sub">L1 vysoké dveře (úchytka od 100 cm), L2 a L3 rohové (1 dvířka)</div>
+                <svg viewBox="-14 -34 252 320" aria-label="Čelní pohled levé rameno">
+                    <defs>
+                        <pattern id="hatchCorner4" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                            <line x1="0" y1="0" x2="0" y2="6" stroke="#c9b49c" stroke-width="1.2"/>
+                        </pattern>
+                        <marker id="arr4" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                            <path d="M1,1 L7,4 L1,7 z" fill="#5a6370"/>
+                        </marker>
+                    </defs>
+                    <!-- Strop a podlaha -->
+                    <line x1="-6" y1="0" x2="188" y2="0" stroke="#9aa3b0" stroke-width="1" stroke-dasharray="4 3"/>
+                    <line x1="-6" y1="262" x2="188" y2="262" stroke="#1f252e" stroke-width="2"/>
+
+                    <!-- Zapuštěný krycí sokl pod L1 + L2 (a 3,5 cm přední sokl R1) -->
+                    <rect x="3.5" y="252" width="116.5" height="10" fill="#f7f1e8" stroke="#8c5a2b" stroke-width="1"/>
+                    <rect x="120" y="252" width="3.5" height="10" fill="#ebd9c3" stroke="#8c5a2b" stroke-width="1"/>
+
+                    <!-- L1 vysoké dveře (x: 0..60, y: 0..252) -->
+                    <rect x="0" y="0" width="60" height="252" fill="#f7f1e8" stroke="#8c5a2b" stroke-width="1.3"/>
+                    <!-- Směr otevírání L1 (panty vlevo, x=0) -->
+                    <polyline points="60,0 0,126 60,252" fill="none" stroke="#9aa3b0" stroke-width="0.8" stroke-dasharray="3 2.5"/>
+                    <!-- Svislá úchytka L1 (5 cm od pravé hrany, Y = 100..116 -> y = 146..162) -->
+                    <rect x="53.5" y="146" width="2" height="16" rx="0.7" fill="#5a6370"/>
+                    <!-- Kóta výšky úchytky 100 cm -->
+                    <line x1="46" y1="162" x2="46" y2="262" stroke="#2b6cb0" stroke-width="0.8" marker-start="url(#arr4)" marker-end="url(#arr4)"/>
+                    <text x="42" y="216" text-anchor="end" font-size="8.2" font-weight="700" fill="#2b6cb0">100</text>
+                    <text x="30" y="105" text-anchor="middle" font-size="11" font-weight="700" fill="#1f252e">L1</text>
+                    <text x="30" y="118" text-anchor="middle" font-size="8" fill="#5a6370">60 × 252</text>
+
+                    <!-- L2 spodní rohová (x: 60..114 dvířka, 114..120 roh. lišta 6 cm, 120..180 napojení R1) -->
+                    <rect x="60" y="180" width="54" height="72" fill="#f7f1e8" stroke="#8c5a2b" stroke-width="1.3"/>
+                    <polyline points="60,180 114,216 60,252" fill="none" stroke="#9aa3b0" stroke-width="0.8" stroke-dasharray="3 2.5"/>
+                    <!-- Svislá úchytka L2 (vlevo 5 cm od hrany a 5 cm shora) -->
+                    <rect x="64.5" y="185" width="2" height="16" rx="0.7" fill="#5a6370"/>
+                    <rect x="114" y="180" width="6" height="72" fill="#dfcbb4" stroke="#8c5a2b" stroke-width="1"/>
+                    <!-- Přesah pravého ramena R1 (hl. 60 cm, na 10 cm nožkách) -->
+                    <rect x="120" y="180" width="60" height="72" fill="url(#hatchCorner4)" stroke="#8c5a2b" stroke-width="1" stroke-dasharray="3 2"/>
+                    <text x="150" y="214" text-anchor="middle" font-size="8.2" fill="#5a6370">napojení</text>
+                    <text x="150" y="225" text-anchor="middle" font-size="8.2" fill="#5a6370">R1 (60 cm)</text>
+                    <text x="87" y="221" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1f252e">L2</text>
+
+                    <!-- Pracovní deska 4 cm -->
+                    <rect x="60" y="176" width="120" height="4.4" fill="#4a2e17"/>
+
+                    <!-- L3 horní rohová (x: 60..136 dvířka, 136..140 roh. lišta, 140..180 napojení R4) -->
+                    <rect x="60" y="0" width="76" height="111" fill="#f7f1e8" stroke="#8c5a2b" stroke-width="1.3"/>
+                    <line x1="60" y1="109" x2="136" y2="109" stroke="#2b6cb0" stroke-width="0.9" stroke-dasharray="3 2"/>
+                    <polyline points="60,0 136,55.5 60,111" fill="none" stroke="#9aa3b0" stroke-width="0.8" stroke-dasharray="3 2.5"/>
+                    <rect x="136" y="0" width="4" height="111" fill="#dfcbb4" stroke="#8c5a2b" stroke-width="1"/>
+                    <!-- Přesah horního pravého ramena R4 (hl. 40 cm) -->
+                    <rect x="140" y="0" width="40" height="111" fill="url(#hatchCorner4)" stroke="#8c5a2b" stroke-width="1" stroke-dasharray="3 2"/>
+                    <text x="160" y="53" text-anchor="middle" font-size="8" fill="#5a6370">napoj.</text>
+                    <text x="160" y="64" text-anchor="middle" font-size="8" fill="#5a6370">R4 (40)</text>
+                    <text x="98" y="59" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1f252e">L3</text>
+                    <text x="98" y="122" text-anchor="middle" font-size="7.8" font-weight="600" fill="#2b6cb0">přesah 15 mm</text>
+
+                    <!-- Horní kóty (L1 + L3 + lišta + R4) -->
+                    <line x1="0" y1="-10" x2="60" y2="-10" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr4)" marker-end="url(#arr4)"/>
+                    <text x="30" y="-13" text-anchor="middle" font-size="8.5" fill="#1f252e">60</text>
+                    <line x1="60" y1="-10" x2="136" y2="-10" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr4)" marker-end="url(#arr4)"/>
+                    <text x="98" y="-13" text-anchor="middle" font-size="8.5" fill="#1f252e">76</text>
+                    <text x="138" y="-13" text-anchor="middle" font-size="7.5" fill="#8c5a2b">4</text>
+                    <line x1="140" y1="-10" x2="180" y2="-10" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr4)" marker-end="url(#arr4)"/>
+                    <text x="160" y="-13" text-anchor="middle" font-size="8.5" fill="#1f252e">40</text>
+                    <line x1="0" y1="-24" x2="180" y2="-24" stroke="#8c5a2b" stroke-width="1" marker-start="url(#arr4)" marker-end="url(#arr4)"/>
+                    <text x="90" y="-27" text-anchor="middle" font-size="9.5" font-weight="700" fill="#8c5a2b">180 cm</text>
+
+                    <!-- Spodní kóty (L1 + L2 + lišta 6 cm + R1) -->
+                    <line x1="0" y1="274" x2="60" y2="274" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr4)" marker-end="url(#arr4)"/>
+                    <text x="30" y="284" text-anchor="middle" font-size="8.5" fill="#1f252e">60</text>
+                    <line x1="60" y1="274" x2="114" y2="274" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr4)" marker-end="url(#arr4)"/>
+                    <text x="87" y="284" text-anchor="middle" font-size="8.5" fill="#1f252e">54</text>
+                    <text x="117" y="284" text-anchor="middle" font-size="7.5" fill="#8c5a2b">6</text>
+                    <line x1="120" y1="274" x2="180" y2="274" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr4)" marker-end="url(#arr4)"/>
+                    <text x="150" y="284" text-anchor="middle" font-size="8.5" fill="#1f252e">60</text>
+
+                    <!-- Pravé výškové kóty -->
+                    <line x1="193" y1="0" x2="193" y2="111" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr4)" marker-end="url(#arr4)"/>
+                    <text x="197" y="59" font-size="8.8" fill="#1f252e">111</text>
+                    <line x1="193" y1="111" x2="193" y2="176" stroke="#2b6cb0" stroke-width="0.9" marker-start="url(#arr4)" marker-end="url(#arr4)"/>
+                    <text x="197" y="147" font-size="8.8" font-weight="700" fill="#2b6cb0">65</text>
+                    <line x1="193" y1="176" x2="193" y2="262" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr4)" marker-end="url(#arr4)"/>
+                    <text x="197" y="222" font-size="8.8" fill="#1f252e">86</text>
+                    <line x1="220" y1="0" x2="220" y2="262" stroke="#8c5a2b" stroke-width="1" marker-start="url(#arr4)" marker-end="url(#arr4)"/>
+                    <text x="230" y="131" text-anchor="middle" font-size="9.5" font-weight="700" fill="#8c5a2b" transform="rotate(90 230 131)">262 cm</text>
+                </svg>
+            </div>
+        </div>
+
+        <h2>4. Vnitřní členění skříněk (police, vnitřní zásuvky v L1 a nožky – pohled bez dvířek)</h2>
+        <div class="diagram-card">
+            <div class="diagram-title">Výkres 5 – Vnitřní uspořádání všech modulů (orientační rozteče v cm)</div>
+            <div class="diagram-sub">Vysoká skříň L1: 4 skryté vnitřní zásuvky do výšky cca 120 cm + 4 police nad nimi &nbsp;|&nbsp; L2: 1 police &nbsp;|&nbsp; L3 a R4–R6: po 2 policích</div>
+            <svg viewBox="-26 -24 468 300" aria-label="Vnitřní členění všech skříněk">
+                <defs>
+                    <marker id="arr5" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                        <path d="M1,1 L7,4 L1,7 z" fill="#5a6370"/>
+                    </marker>
+                </defs>
+                <!-- ===== LEVÉ RAMENO VNITŘEK (x: 0..180) ===== -->
+                <text x="90" y="-11" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1f252e">Levé rameno – vnitřek (L1, L2, L3)</text>
+                <line x1="-6" y1="262" x2="186" y2="262" stroke="#1f252e" stroke-width="2"/>
+
+                <!-- L1 korpus (x: 0..60, y: 0..252) -->
+                <rect x="0" y="0" width="60" height="252" fill="#fcf9f4" stroke="#8c5a2b" stroke-width="1.5"/>
+                <!-- 4 police v L1 (Y = 121, 156, 191, 225 -> y = 141, 106, 71, 37) -->
+                <g fill="#d9c2a6" stroke="#8c5a2b" stroke-width="0.9">
+                    <rect x="2" y="35" width="56" height="2.4"/>
+                    <rect x="2" y="70" width="56" height="2.4"/>
+                    <rect x="2" y="105" width="56" height="2.4"/>
+                    <rect x="2" y="139" width="56" height="2.4"/>
+                </g>
+                <text x="30" y="21" text-anchor="middle" font-size="8" fill="#5a6370">~35 cm</text>
+                <text x="30" y="56" text-anchor="middle" font-size="8" fill="#5a6370">~33 cm</text>
+                <text x="30" y="91" text-anchor="middle" font-size="8" fill="#5a6370">~33 cm</text>
+                <text x="30" y="125" text-anchor="middle" font-size="8" fill="#5a6370">~33 cm</text>
+
+                <!-- Vymezovací lišta na straně pantů v L1 (2,5 cm) -->
+                <rect x="1.8" y="141.4" width="2.5" height="108.6" fill="#dfcbb4" stroke="#8c5a2b" stroke-width="0.8"/>
+                <!-- 4 vnitřní výsuvné zásuvky v L1 (Y = 13..38, 40..65, 67..92, 94..119 -> y = 224..249, 197..222, 170..195, 143..168) -->
+                <g fill="#ebd9c3" stroke="#8c5a2b" stroke-width="1.1">
+                    <rect x="5.5" y="143" width="51.5" height="24"/>
+                    <rect x="5.5" y="170" width="51.5" height="24"/>
+                    <rect x="5.5" y="197" width="51.5" height="24"/>
+                    <rect x="5.5" y="224" width="51.5" height="24"/>
+                </g>
+                <!-- Nízkoprofilové lišty/úchopy vnitřních zásuvek -->
+                <g fill="#5a6370">
+                    <rect x="23" y="144.5" width="16" height="1.8" rx="0.5"/>
+                    <rect x="23" y="171.5" width="16" height="1.8" rx="0.5"/>
+                    <rect x="23" y="198.5" width="16" height="1.8" rx="0.5"/>
+                    <rect x="23" y="225.5" width="16" height="1.8" rx="0.5"/>
+                </g>
+                <text x="31" y="159" text-anchor="middle" font-size="7.5" fill="#1f252e">vnitřní šuplík 4</text>
+                <text x="31" y="186" text-anchor="middle" font-size="7.5" fill="#1f252e">vnitřní šuplík 3</text>
+                <text x="31" y="213" text-anchor="middle" font-size="7.5" fill="#1f252e">vnitřní šuplík 2</text>
+                <text x="31" y="240" text-anchor="middle" font-size="7.5" fill="#1f252e">vnitřní šuplík 1</text>
+
+                <!-- Kóta zóny šuplíků 120 cm vlevo od L1 -->
+                <line x1="-11" y1="142" x2="-11" y2="262" stroke="#2b6cb0" stroke-width="0.9" marker-start="url(#arr5)" marker-end="url(#arr5)"/>
+                <text x="-15" y="202" text-anchor="middle" font-size="8.5" font-weight="700" fill="#2b6cb0" transform="rotate(-90 -15 202)">120 cm</text>
+
+                <!-- L2 vnitřek (x: 60..180, y: 180..252, 1 police v Y=46 -> y=216 + podpěrný sloupek) -->
+                <rect x="60" y="180" width="120" height="72" fill="#fcf9f4" stroke="#8c5a2b" stroke-width="1.5"/>
+                <rect x="119" y="181.8" width="2" height="68.4" fill="#dfcbb4" stroke="#8c5a2b" stroke-width="0.7"/>
+                <rect x="62" y="215" width="116" height="2.4" fill="#d9c2a6" stroke="#8c5a2b" stroke-width="0.9"/>
+                <text x="120" y="201" text-anchor="middle" font-size="8.5" font-weight="700" fill="#1f252e">L2 – 1 police + podpěra</text>
+                <text x="120" y="238" text-anchor="middle" font-size="8" fill="#5a6370">(slepý roh š. 120 cm)</text>
+                <!-- Deska -->
+                <rect x="60" y="176" width="120" height="4.2" fill="#4a2e17"/>
+
+                <!-- L3 vnitřek (x: 60..180, y: 0..109.5, 2 police v Y=188, 225 -> y=74, 37 + podpěrný sloupek) -->
+                <rect x="60" y="0" width="120" height="109.5" fill="#fcf9f4" stroke="#8c5a2b" stroke-width="1.5"/>
+                <rect x="139" y="1.8" width="2" height="106" fill="#dfcbb4" stroke="#8c5a2b" stroke-width="0.7"/>
+                <rect x="62" y="36" width="116" height="2.4" fill="#d9c2a6" stroke="#8c5a2b" stroke-width="0.9"/>
+                <rect x="62" y="73" width="116" height="2.4" fill="#d9c2a6" stroke="#8c5a2b" stroke-width="0.9"/>
+                <text x="102" y="22" text-anchor="middle" font-size="8.2" fill="#5a6370">~35 cm</text>
+                <text x="102" y="58" text-anchor="middle" font-size="8.5" font-weight="700" fill="#1f252e">L3 – 2 police + podpěra</text>
+                <text x="102" y="95" text-anchor="middle" font-size="8.2" fill="#5a6370">~35 cm</text>
+
+                <!-- Nožky pod L1 a L2 -->
+                <g fill="#3a414d">
+                    <rect x="7" y="252" width="3" height="10"/><rect x="50" y="252" width="3" height="10"/>
+                    <rect x="66" y="252" width="3" height="10"/><rect x="118" y="252" width="3" height="10"/><rect x="171" y="252" width="3" height="10"/>
+                </g>
+
+                <!-- ===== PRAVÉ RAMENO VNITŘEK (x: 245..401, tj. 156 cm = 3 × 52 cm) ===== -->
+                <text x="323" y="-11" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1f252e">Pravé rameno – vnitřek (R1–R3 zásuvky, R4–R6 police)</text>
+                <line x1="238" y1="262" x2="412" y2="262" stroke="#1f252e" stroke-width="2"/>
+
+                <!-- R4–R6 vnitřek (3 × 52 cm, hl. 40 cm, po 2 policích) -->
+                <g fill="#fcf9f4" stroke="#8c5a2b" stroke-width="1.4">
+                    <rect x="245" y="0" width="52" height="109.5"/>
+                    <rect x="297" y="0" width="52" height="109.5"/>
+                    <rect x="349" y="0" width="52" height="109.5"/>
+                </g>
+                <g fill="#d9c2a6" stroke="#8c5a2b" stroke-width="0.9">
+                    <rect x="247" y="36" width="48" height="2.4"/><rect x="247" y="73" width="48" height="2.4"/>
+                    <rect x="299" y="36" width="48" height="2.4"/><rect x="299" y="73" width="48" height="2.4"/>
+                    <rect x="351" y="36" width="48" height="2.4"/><rect x="351" y="73" width="48" height="2.4"/>
+                </g>
+                <text x="271" y="58" text-anchor="middle" font-size="8.5" font-weight="700" fill="#1f252e">R4 (2 pol.)</text>
+                <text x="323" y="58" text-anchor="middle" font-size="8.5" font-weight="700" fill="#1f252e">R5 (2 pol.)</text>
+                <text x="375" y="58" text-anchor="middle" font-size="8.5" font-weight="700" fill="#1f252e">R6 (2 pol.)</text>
+
+                <!-- Deska -->
+                <rect x="245" y="176" width="157" height="4.2" fill="#4a2e17"/>
+
+                <!-- R1–R3 spodní korpusy (3 × 3 zásuvky) -->
+                <g fill="#ebd9c3" stroke="#8c5a2b" stroke-width="1.2">
+                    <rect x="245" y="180" width="52" height="24"/><rect x="245" y="204" width="52" height="24"/><rect x="245" y="228" width="52" height="24"/>
+                    <rect x="297" y="180" width="52" height="24"/><rect x="297" y="204" width="52" height="24"/><rect x="297" y="228" width="52" height="24"/>
+                    <rect x="349" y="180" width="52" height="24"/><rect x="349" y="204" width="52" height="24"/><rect x="349" y="228" width="52" height="24"/>
+                </g>
+                <text x="271" y="219" text-anchor="middle" font-size="8.5" font-weight="700" fill="#1f252e">R1 (3 zásuv.)</text>
+                <text x="323" y="219" text-anchor="middle" font-size="8.5" font-weight="700" fill="#1f252e">R2 (3 zásuv.)</text>
+                <text x="375" y="219" text-anchor="middle" font-size="8.5" font-weight="700" fill="#1f252e">R3 (3 zásuv.)</text>
+
+                <!-- Nožky pod R1–R3 -->
+                <g fill="#3a414d">
+                    <rect x="251" y="252" width="3" height="10"/><rect x="288" y="252" width="3" height="10"/>
+                    <rect x="303" y="252" width="3" height="10"/><rect x="340" y="252" width="3" height="10"/>
+                    <rect x="355" y="252" width="3" height="10"/><rect x="392" y="252" width="3" height="10"/>
+                </g>
+
+                <!-- Výškové kóty vpravo -->
+                <line x1="414" y1="0" x2="414" y2="109.5" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr5)" marker-end="url(#arr5)"/>
+                <text x="418" y="58" font-size="8.5" fill="#1f252e">109,5</text>
+                <line x1="414" y1="180" x2="414" y2="252" stroke="#5a6370" stroke-width="0.9" marker-start="url(#arr5)" marker-end="url(#arr5)"/>
+                <text x="418" y="219" font-size="8.5" fill="#1f252e">72</text>
+                <text x="418" y="261" font-size="8.2" fill="#5a6370">10 nožky</text>
+            </svg>
+            <div class="legend">
+                <span><i class="swatch" style="background:#f7f1e8;"></i> Korpusy / dvířka (K529 HU)</span>
+                <span><i class="swatch" style="background:#4a2e17;border-color:#4a2e17;"></i> Pracovní deska 4 cm (kouřový dub)</span>
+                <span><i class="swatch" style="background:#dfcbb4;"></i> Rohová vymezovací lišta (4 / 6 cm) a podpěry</span>
+                <span><i class="swatch" style="background:#3a414d;border-color:#3a414d;"></i> Rektifikační nožky 10 cm</span>
+            </div>
+        </div>
+
+        <div class="note-box">
+            <ul>
+                <li><strong>Zaměření na místě a stropní lišta:</strong> Veškeré rozměry jsou orientační jmenovité hodnoty před přesným zaměřením (kolmost rohu, rovinnost podlahy/stěn, přesná výška ke stropu). Pro bezpečné otevírání dvířek pod nerovným stropem i snadnější vztyčení skříně L1 doporučujeme horní dorazovou / stropní lištu (cca 15–20 mm).</li>
+                <li><strong>Rohové lišty a kování:</strong> U L2 je navržena rohová vymezovací lišta <strong>6 cm</strong> (dvířka 54 cm) pro bezpečný průchod kolem vyčnívajících úchytek TULIP IDA u R1; u R1 a v horním rohu L3–R4 je lišta <strong>4 cm</strong>. Šířky dolaďte podle zvolených pantů a omezovačů úhlu otevření (90°).</li>
+                <li><strong>Tuhost polic, kotvení L3 a vysoké dveře L1:</strong> Police v L2 a L3 (rozpětí cca 116 cm) podepřete středovým sloupkem či zesilte (tl. 25 mm) proti průhybu; hlubokou horní skříňku L3 (hl. 60 cm) kotvěte do obou stěn i do boku L1. Pro dveře L1 (252 cm) zvažte napínák dveří proti prohnutí.</li>
+                <li><strong>Detaily na doporučení truhláře:</strong> Volba pohledových bočnic (k soklu vs. až na podlahu), přestavitelnost polic na kolíky a konkrétní značka kování necháváme na Vašem doporučení.</li>
+            </ul>
+        </div>
+    </section>
+</body>
+</html>
