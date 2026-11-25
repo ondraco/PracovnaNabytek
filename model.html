@@ -115,7 +115,7 @@
                       style="background: linear-gradient(135deg, #c8985e, #986832);"
                       title="KRONOSPAN K529 HU – Hudson Dub Zlatý"></span>
                 <h1 class="text-xs sm:text-base font-semibold tracking-tight text-white leading-snug">
-                    3D CAD Konfigurátor – KRONOSPAN K529 HU <span class="text-amber-300/90 font-normal">(Hudson Dub Zlatý)</span>
+                    3D CAD Konfigurátor pracovny – KRONOSPAN K529 HU <span class="text-amber-300/90 font-normal">(Hudson Dub Zlatý)</span>
                 </h1>
             </div>
             <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] sm:text-xs text-gray-300 mt-1.5">
@@ -123,9 +123,11 @@
                 <span class="text-gray-600">•</span>
                 <span><strong class="text-amber-200/90 font-medium">Pravé rameno:</strong> 216 cm (60 + 156 cm)</span>
                 <span class="text-gray-600">•</span>
-                <span><strong class="text-amber-200/90 font-medium">Strop:</strong> 262 cm</span>
+                <span><strong class="text-amber-200/90 font-medium">Strop:</strong> 262 cm (skříně 260 + 2 cm lišta)</span>
                 <span class="text-gray-600">•</span>
-                <span><strong class="text-amber-200/90 font-medium">Hloubka:</strong> 60 cm (horní pravé 40 cm)</span>
+                <span><strong class="text-amber-200/90 font-medium">Hloubka:</strong> 60 cm v líci (horní R3–R5 40 cm)</span>
+                <span class="text-gray-600">•</span>
+                <span><strong class="text-amber-200/90 font-medium">Barvy:</strong> L1/L3/R3–R5 dub K529 HU • L2/R1–R2 bílá mat</span>
             </div>
         </div>
     </header>
@@ -151,8 +153,8 @@
                     <span class="text-[10px] text-amber-300/85">3D ISO</span>
                 </button>
                 <button data-view="leftDrawers" class="cad-btn rounded-xl px-3 py-2 text-xs font-medium text-left border border-white/10 flex items-center justify-between">
-                    <span>Detail levé skříně (4 šuplíky)</span>
-                    <span class="text-[10px] text-emerald-300/90">120 cm</span>
+                    <span>Detail levé skříně L1 (4 šuplíky)</span>
+                    <span class="text-[10px] text-emerald-300/90">114 cm</span>
                 </button>
                 <button data-view="front216" class="cad-btn rounded-xl px-3 py-2 text-xs font-medium text-left border border-white/10 flex items-center justify-between">
                     <span>Čelní pohled (216 cm)</span>
@@ -168,7 +170,7 @@
                 </button>
                 <button data-view="plinthDetail" class="cad-btn rounded-xl px-3 py-2 text-xs font-medium text-left border border-white/10 flex items-center justify-between">
                     <span>Detail soklu a nožek</span>
-                    <span class="text-[10px] text-sky-300/90">22 nožek</span>
+                    <span class="text-[10px] text-sky-300/90">18 nožek</span>
                 </button>
             </div>
         </div>
@@ -181,7 +183,7 @@
 
             <button id="btn-tall-drawers"
                     class="cad-btn w-full rounded-xl px-3 py-2.5 text-xs font-medium text-left border border-emerald-400/35 bg-emerald-500/10 flex items-center justify-between">
-                <span>Otevřít levou skříň a 4 šuplíky</span>
+                <span>Otevřít levou skříň L1 a 4 šuplíky</span>
                 <span id="badge-tall" class="px-2 py-0.5 rounded-md text-[10px] bg-white/10 text-gray-300">Zavřeno</span>
             </button>
 
@@ -200,7 +202,7 @@
 
             <button id="btn-toggle-labels"
                     class="cad-btn w-full rounded-xl px-3 py-2 text-xs font-medium text-left border border-white/10 flex items-center justify-between">
-                <span>Označení skříněk (L1–L3, R1–R6)</span>
+                <span>Označení skříněk (L1–L3, R1–R5)</span>
                 <span id="badge-labels" class="px-2 py-0.5 rounded-md text-[10px] bg-white/10 text-gray-400">VYP</span>
             </button>
 
@@ -270,20 +272,25 @@
         const SPEC = {
             LEFT_ARM_LEN: 180,       // Levé rameno Z: 0..180 cm
             RIGHT_ARM_LEN: 216,      // Pravé rameno X: 0..216 cm (60 + 156 cm)
-            RIGHT_VISIBLE_LEN: 156,  // Viditelná část pravého ramena X: 60..216 cm
-            CEILING_H: 262,          // Výška stropu a horní hrany skříní
-            BASE_DEPTH: 60,          // Hloubka spodních skříněk a levého ramena
-            UPPER_RIGHT_DEPTH: 40,   // Hloubka horních pravých skříněk (40 cm)
+            RIGHT_VISIBLE_LEN: 156,  // Viditelná část pravého ramena X: 60..216 cm (dole 4 + 2×76 cm, nahoře 3×52 cm)
+            CEILING_H: 262,          // Výška stropu místnosti (262 cm)
+            CEILING_FILLER: 2.0,     // Horní stropní krycí / dorazová lišta (2 cm: Y = 260..262 cm)
+            CABINET_TOP: 260,        // Horní hrana korpusů a dvířek pod stropní lištou (260 cm)
+            TALL_DEPTH: 60,          // Hloubka vysoké skříně L1, horní L3 a pracovní desky (60 cm)
+            BASE_DEPTH: 60,          // Hloubka spodních skříněk L2 a R1–R2 (60 cm – plně v líci s L1 i 60 cm deskou)
+            UPPER_RIGHT_DEPTH: 40,   // Hloubka horních pravých skříněk R3–R5 (40 cm)
             PLINTH_H: 10,            // Výška soklu / rektifikačních nožek (10 cm)
-            PLINTH_RECESS: 3.5,      // Zapuštění krycích soklových lišt od čela a vnějších boků (3.5 cm)
+            PLINTH_RECESS: 3.5,      // Zapuštění předního krycího soklu od čel L1, L2 a R1–R2 (60 - 3.5 = 56.5 cm)
             PLINTH_SEAL_H: 0.25,     // Spodní těsnicí PVC profil soklu proti prachu a vlhkosti (2.5 mm)
             BASE_CARCASS_TOP: 82,    // Horní hrana spodních korpusů (82 cm)
-            COUNTER_THICK: 4,        // Tloušťka pracovní desky (4 cm -> Y: 82..86 cm)
-            UPPER_BOTTOM: 151,       // Spodní hrana dvířek horních skříněk (86 + 65 = 151 cm, výška dvířek 111 cm do 262 cm)
+            COUNTER_THICK: 4,        // Tloušťka pracovní desky (4 cm -> Y: 82..86 cm; u standardní lamina desky 3.8 cm)
+            L1_DRAWERS_TOP: 114,     // Horní hrana 4 vnějších zásuvek v L1 (10 + 4 × 26 = 114 cm)
+            UPPER_BOTTOM: 151,       // Spodní hrana dvířek horních skříněk (86 + 65 = 151 cm, výška dvířek 109 cm do 260 cm)
             UPPER_DOOR_OVERHANG: 1.5,// Spodní přesah dvířek horních skříněk 15 mm (korpus od Y = 152.5 cm, bez úchytek)
-            CORNER_FILLER: 4.0,      // Rohová vymezovací lišta v horním rohu L3–R4 a R1 (4 cm pro bezkolizní otevírání)
-            CORNER_FILLER_L2: 6.0,   // Rohová vymezovací lišta na straně L2 (6 cm pro bezpečný průchod kolem úchytek R1)
+            CORNER_FILLER: 4.0,      // Rohová vymezovací lišta v R1 a horním rohu L3 (4 cm; R3 má panty vpravo, takže bez mezery)
+            CORNER_FILLER_L2: 8.0,   // Rohová vymezovací lišta na straně L2 (8 cm: Z = 60..68 cm, dvířka L2 52 cm, bezkolizní s R1)
             BOARD_T: 1.8,            // Tloušťka lamina 18 mm
+            BACK_HDF_T: 0.4,         // Tloušťka vložených zad HDF 4 mm (u závěsných skříněk R3–R5)
             GAP: 0.25,               // Konstrukční spára 2.5 mm
             HANDLE_LEN: 16.0         // Nábytková úchytka TULIP IDA (DS231423), nikl matný, rozteč 160 mm (16 cm)
         };
@@ -291,8 +298,8 @@
         let scene, camera, renderer, controls;
         let cabinetRoot, roomGroup, dimensionsGroup, labelsGroup, legsGroup, plinthCoversGroup;
         let interactiveItems = [];   // Všechna animovatelná dvířka a šuplíky
-        let tallCabinetDoor = null;  // Reference na vysoké levé dveře
-        let internalDrawers = [];    // Reference na 4 skryté vnitřní šuplíky v levé skříni
+        let tallCabinetDoor = null;  // Reference na horní dveře vysoké skříně L1
+        let l1ExternalDrawers = [];  // Reference na 4 vnější šuplíky v levé skříni L1
         let hoveredItem = null;
         let cameraAnim = null;
 
@@ -528,7 +535,7 @@
             const counter = generateWoodTextures({ horizontal: true, isCountertop: true, seed: 7741 });
 
             return {
-                // KRONOSPAN K529 HU – svislá léta (dvířka, boky, čela vnitřních šuplíků)
+                // KRONOSPAN K529 HU – svislá léta (všechna dvířka, čela zásuvek, pohledové boky a rohové lišty)
                 oakVertical: new THREE.MeshStandardMaterial({
                     map: vert.map,
                     bumpMap: vert.bumpMap,
@@ -536,7 +543,7 @@
                     roughness: 0.56,
                     metalness: 0.04
                 }),
-                // KRONOSPAN K529 HU – vodorovná léta (čela 9 vnějších šuplíků)
+                // KRONOSPAN K529 HU – vodorovná léta (podélné soklové a stropní lišty)
                 oakHorizontal: new THREE.MeshStandardMaterial({
                     map: horiz.map,
                     bumpMap: horiz.bumpMap,
@@ -552,14 +559,26 @@
                     roughness: 0.44,
                     metalness: 0.05
                 }),
-                // Vnitřní korpusy, police a boky zásuvkových krabic
+                // Vnitřní korpusy, police a boky zásuvkových krabic (dubová část L1, L3, R3–R5)
                 carcassOak: new THREE.MeshStandardMaterial({
                     map: vert.map,
                     color: 0xd9c2a6,
                     roughness: 0.66,
                     metalness: 0.02
                 }),
-                // Úchytka TULIP IDA (DS231423) – nikl matný (dl. 160 mm) dle kuchyně.pdf
+                // Bílá matná (čela, rohové lišty, vnější bok R2 a sokl spodních skříněk L2, R1, R2)
+                whiteMatte: new THREE.MeshStandardMaterial({
+                    color: 0xf1f0ec,
+                    roughness: 0.50,
+                    metalness: 0.02
+                }),
+                // Bílé vnitřní korpusy, police a zásuvkové krabice pro L2, R1, R2
+                whiteCarcass: new THREE.MeshStandardMaterial({
+                    color: 0xe6e5e0,
+                    roughness: 0.62,
+                    metalness: 0.02
+                }),
+                // Úchytka TULIP IDA (DS231423) – nikl matný (rozteč 160 mm)
                 matteNickelMetal: new THREE.MeshStandardMaterial({
                     color: 0xc9cdd2,
                     roughness: 0.28,
@@ -607,7 +626,7 @@
         }
 
         /**
-         * Vytvoří nábytkovou úchytku TULIP IDA (DS231423) – nikl matný, rozteč 160 mm (16 cm) dle kuchyně.pdf
+         * Vytvoří nábytkovou úchytku TULIP IDA (DS231423) – nikl matný, rozteč 160 mm (16 cm)
          * Lokální počátek (0,0,0) leží na čelní ploše dvířek/šuplíku a madlo vystupuje do +Z.
          */
         function createStandardHandle(material, isHorizontal = false) {
@@ -685,12 +704,12 @@
         }
 
         /**
-         * Vytvoří otočné dveře se skutečným pantem na hraně korpusu
+         * Vytvoří otočné dveře s realistickým pantem na čelní hraně (bez kolize sousedních dvířek)
          */
         function createHingedDoor({
             name,
             label,
-            hingePos,      // {x, y, z} souřadnice osy pantu
+            hingePos,      // {x, y, z} souřadnice osy pantu na čelní rovině dvířek
             doorWidth,     // Šířka dvířek v cm
             doorHeight,    // Výška dvířek v cm
             doorThick = SPEC.BOARD_T,
@@ -698,21 +717,23 @@
             hingeSide,     // 'left' nebo 'right' při čelním pohledu na dvířka
             openAngleRad,  // Úhel otevření v radiánech
             handlePosLocal,// {u, v} posun úchytky od středu dvířek (u = vodorovně doprava při pohledu zepředu, v = svisle nahoru)
+            doorMaterial,  // Volitelný materiál dvířek (výchozí materials.oakVertical)
             materials
         }) {
             const pivot = new THREE.Group();
             pivot.position.set(hingePos.x, hingePos.y, hingePos.z);
             pivot.name = name;
 
+            const mat = doorMaterial || materials.oakVertical;
             const doorGroup = new THREE.Group();
             let doorMesh, handleMesh;
 
             if (facing === '+Z') {
-                // Dvířka směřují do +Z (pravé horní skříňky)
+                // Dvířka směřují do +Z (pravé horní skříňky), čelní rovina je v lokálním z = 0
                 const dirX = hingeSide === 'left' ? 1 : -1;
                 const geo = new THREE.BoxGeometry(doorWidth, doorHeight, doorThick);
-                doorMesh = new THREE.Mesh(geo, materials.oakVertical);
-                doorMesh.position.set(dirX * (doorWidth / 2), 0, doorThick / 2);
+                doorMesh = new THREE.Mesh(geo, mat);
+                doorMesh.position.set(dirX * (doorWidth / 2), 0, -doorThick / 2);
                 doorMesh.castShadow = true;
                 doorMesh.receiveShadow = true;
                 doorGroup.add(doorMesh);
@@ -722,17 +743,17 @@
                     handleMesh.position.set(
                         dirX * (doorWidth / 2) + handlePosLocal.u,
                         handlePosLocal.v,
-                        doorThick
+                        0
                     );
                     doorGroup.add(handleMesh);
                 }
             } else if (facing === '+X') {
-                // Dvířka směřují do +X (levé rameno)
+                // Dvířka směřují do +X (levé rameno), čelní rovina je v lokálním x = 0
                 // Při čelním pohledu z +X směrem k -X je "vlevo" směr +Z a "vpravo" směr -Z
                 const dirZ = hingeSide === 'left' ? -1 : 1;
                 const geo = new THREE.BoxGeometry(doorThick, doorHeight, doorWidth);
-                doorMesh = new THREE.Mesh(geo, materials.oakVertical);
-                doorMesh.position.set(doorThick / 2, 0, dirZ * (doorWidth / 2));
+                doorMesh = new THREE.Mesh(geo, mat);
+                doorMesh.position.set(-doorThick / 2, 0, dirZ * (doorWidth / 2));
                 doorMesh.castShadow = true;
                 doorMesh.receiveShadow = true;
                 doorGroup.add(doorMesh);
@@ -741,7 +762,7 @@
                     handleMesh = createStandardHandle(materials.matteNickelMetal, false);
                     handleMesh.rotation.y = Math.PI / 2;
                     handleMesh.position.set(
-                        doorThick,
+                        0,
                         handlePosLocal.v,
                         dirZ * (doorWidth / 2) - handlePosLocal.u
                     );
@@ -865,59 +886,51 @@
         }
 
         /**
-         * Sestaví podstavec na 22 rektifikačních nožkách (100 mm) a 4 tenkých nacvakávacích
-         * krycích soklových lištách (18 mm lamino + 2.5 mm těsnicí profil) pouze z pohledových stran.
+         * Sestaví podstavec na 18 rektifikačních nožkách (100 mm) a 2 průběžných nacvakávacích
+         * předních krycích soklových lištách (18 mm lamino + 2.5 mm těsnicí profil).
+         * Vnější pohledové boky L1 (Z = 180) a R2 (X = 216) sahají až k podlaze (Y = 0), takže boční sokly nejsou potřeba.
          * Strany u stěn (X = 0, Z = 0) zůstávají pod korpusy otevřené pro odvětrání a rozvody.
          */
         function buildBaseLegsAndPlinth(materials) {
             const t = SPEC.BOARD_T;          // 1.8 cm
             const plinthH = SPEC.PLINTH_H;   // 10.0 cm
             const sealH = SPEC.PLINTH_SEAL_H;// 0.25 cm
-            const rec = SPEC.PLINTH_RECESS;  // 3.5 cm
+            const rec = SPEC.PLINTH_RECESS;  // 3.5 cm (od čel L1, L2 a R1–R2 v 60 cm -> čelo soklu 56.5 cm)
 
-            const frontFace = SPEC.BASE_DEPTH - rec;       // 56.5 cm
+            const frontFace = SPEC.BASE_DEPTH - rec;       // 56.5 cm (všechny spodní skříňky v líci 60 cm -> zapuštění 3.5 cm)
             const frontBack = frontFace - t;               // 54.7 cm
-            const leftEndFace = SPEC.LEFT_ARM_LEN - rec;   // 176.5 cm
-            const leftEndBack = leftEndFace - t;           // 174.7 cm
-            const rightEndFace = SPEC.RIGHT_ARM_LEN - rec; // 212.5 cm
-            const rightEndBack = rightEndFace - t;         // 210.7 cm
+            const legFrontPos = frontBack - 3.7;           // 51.0 cm (přesný dosah soklového klipu 3.7 cm)
 
-            // --- 1. REKTIFIKAČNÍ NOŽKY (celkem 22 ks: L1 = 4, L2 = 6, R1 = 4, R2 = 4, R3 = 4) ---
+            // --- 1. REKTIFIKAČNÍ NOŽKY (celkem 18 ks: L1 = 4, L2 = 6, R1 = 4, R2 = 4) ---
             legsGroup = new THREE.Group();
-            legsGroup.name = 'Rektifikacni_nozky_100mm_22ks';
+            legsGroup.name = 'Rektifikacni_nozky_100mm_18ks';
 
             const legSpecs = [
-                // L1 – Vysoká levá skříň (Z: 120..180 cm, 4 nožky)
-                { x: 7.0,   z: 126.0, clips: [],           name: 'Nozka_L1_zadni_prava' },
-                { x: 7.0,   z: 171.0, clips: ['+Z'],       name: 'Nozka_L1_zadni_leva' },
-                { x: 51.0,  z: 126.0, clips: ['+X'],       name: 'Nozka_L1_predni_prava' },
-                { x: 51.0,  z: 171.0, clips: ['+X', '+Z'], name: 'Nozka_L1_predni_leva' },
+                // L1 – Vysoká levá skříň (Z: 120..180 cm, 4 nožky pod dnem; vnější bok Z=178.2..180 stojí na podlaze)
+                { x: 7.0,         z: 126.0, clips: [],     name: 'Nozka_L1_zadni_prava' },
+                { x: 7.0,         z: 172.0, clips: [],     name: 'Nozka_L1_zadni_leva' },
+                { x: legFrontPos, z: 126.0, clips: ['+X'], name: 'Nozka_L1_predni_prava' },
+                { x: legFrontPos, z: 172.0, clips: ['+X'], name: 'Nozka_L1_predni_leva' },
 
                 // L2 – Spodní rohová skříňka levá (Z: 0..120 cm, 6 nožek pro rozpětí 120 cm)
-                { x: 7.0,   z: 7.0,   clips: [],           name: 'Nozka_L2_zadni_roh' },
-                { x: 7.0,   z: 60.0,  clips: [],           name: 'Nozka_L2_zadni_stred' },
-                { x: 7.0,   z: 114.0, clips: [],           name: 'Nozka_L2_zadni_leva' },
-                { x: 51.0,  z: 7.0,   clips: [],           name: 'Nozka_L2_predni_roh' },
-                { x: 51.0,  z: 62.0,  clips: ['+X'],       name: 'Nozka_L2_predni_stred' },
-                { x: 51.0,  z: 114.0, clips: ['+X'],       name: 'Nozka_L2_predni_leva' },
+                { x: 7.0,         z: 7.0,   clips: [],     name: 'Nozka_L2_zadni_roh' },
+                { x: 7.0,         z: 60.0,  clips: [],     name: 'Nozka_L2_zadni_stred' },
+                { x: 7.0,         z: 114.0, clips: [],     name: 'Nozka_L2_zadni_leva' },
+                { x: legFrontPos, z: 7.0,   clips: [],     name: 'Nozka_L2_predni_roh' },
+                { x: legFrontPos, z: 62.0,  clips: ['+X'], name: 'Nozka_L2_predni_stred' },
+                { x: legFrontPos, z: 114.0, clips: ['+X'], name: 'Nozka_L2_predni_leva' },
 
-                // R1 – Spodní pravá zásuvková 1 (X: 60..112 cm, 4 nožky)
-                { x: 66.0,  z: 7.0,   clips: [],           name: 'Nozka_R1_zadni_leva' },
-                { x: 106.0, z: 7.0,   clips: [],           name: 'Nozka_R1_zadni_prava' },
-                { x: 66.0,  z: 51.0,  clips: ['+Z'],       name: 'Nozka_R1_predni_leva' },
-                { x: 106.0, z: 51.0,  clips: ['+Z'],       name: 'Nozka_R1_predni_prava' },
+                // R1 – Spodní pravá široká zásuvková 1 (X: 64..140 cm = 76 cm, 4 nožky)
+                { x: 70.0,        z: 7.0,         clips: [],     name: 'Nozka_R1_zadni_leva' },
+                { x: 134.0,       z: 7.0,         clips: [],     name: 'Nozka_R1_zadni_prava' },
+                { x: 70.0,        z: legFrontPos, clips: ['+Z'], name: 'Nozka_R1_predni_leva' },
+                { x: 134.0,       z: legFrontPos, clips: ['+Z'], name: 'Nozka_R1_predni_prava' },
 
-                // R2 – Spodní pravá zásuvková 2 (X: 112..164 cm, 4 nožky)
-                { x: 118.0, z: 7.0,   clips: [],           name: 'Nozka_R2_zadni_leva' },
-                { x: 158.0, z: 7.0,   clips: [],           name: 'Nozka_R2_zadni_prava' },
-                { x: 118.0, z: 51.0,  clips: ['+Z'],       name: 'Nozka_R2_predni_leva' },
-                { x: 158.0, z: 51.0,  clips: ['+Z'],       name: 'Nozka_R2_predni_prava' },
-
-                // R3 – Spodní pravá zásuvková 3 (X: 164..216 cm, 4 nožky)
-                { x: 170.0, z: 7.0,   clips: [],           name: 'Nozka_R3_zadni_leva' },
-                { x: 207.0, z: 7.0,   clips: ['+X'],       name: 'Nozka_R3_zadni_prava' },
-                { x: 170.0, z: 51.0,  clips: ['+Z'],       name: 'Nozka_R3_predni_leva' },
-                { x: 207.0, z: 51.0,  clips: ['+Z', '+X'], name: 'Nozka_R3_predni_prava' }
+                // R2 – Spodní pravá široká zásuvková 2 (X: 140..216 cm = 76 cm, 4 nožky; vnější bok X=214.2..216 stojí na podlaze)
+                { x: 146.0,       z: 7.0,         clips: [],     name: 'Nozka_R2_zadni_leva' },
+                { x: 208.0,       z: 7.0,         clips: [],     name: 'Nozka_R2_zadni_prava' },
+                { x: 146.0,       z: legFrontPos, clips: ['+Z'], name: 'Nozka_R2_predni_leva' },
+                { x: 208.0,       z: legFrontPos, clips: ['+Z'], name: 'Nozka_R2_predni_prava' }
             ];
 
             legSpecs.forEach(spec => {
@@ -925,349 +938,355 @@
             });
             cabinetRoot.add(legsGroup);
 
-            // --- 2. NACVAKÁVACÍ KRYCÍ SOKLOVÉ LIŠTY (4 pohledové desky tl. 18 mm + spodní těsnicí profil) ---
+            // --- 2. NACVAKÁVACÍ KRYCÍ SOKLOVÉ LIŠTY (dub pod L1, bílá mat pod L2 a R1–R2) ---
             plinthCoversGroup = new THREE.Group();
-            plinthCoversGroup.name = 'Kryci_soklove_listy_pohledove_4ks';
+            plinthCoversGroup.name = 'Kryci_soklove_listy_pohledove';
 
-            const addPlinthCover = (x1, x2, z1, z2, name) => {
-                // 18 mm lamino krycí deska v dekoru KRONOSPAN K529 HU (Y: 0.25..10.0 cm)
-                plinthCoversGroup.add(createPanelBox(x1, x2, sealH, plinthH, z1, z2, materials.plinthMaterial, name));
+            const addPlinthCover = (x1, x2, z1, z2, mat, name) => {
+                // 18 mm lamino krycí deska (Y: 0.25..10.0 cm)
+                plinthCoversGroup.add(createPanelBox(x1, x2, sealH, plinthH, z1, z2, mat, name));
                 // Spodní těsnicí PVC lišta k podlaze (Y: 0.0..0.25 cm)
                 plinthCoversGroup.add(createPanelBox(x1, x2, 0, sealH, z1, z2, materials.plinthSealMaterial, `${name}_tesneni`));
             };
 
-            // 2A. Čelní krycí sokl levého ramena (L1 + L2, čelem do +X, délka 120.0 cm)
-            addPlinthCover(frontBack, frontFace, frontFace, leftEndFace, 'Kryci_sokl_predni_levy');
-            // 2B. Boční krycí sokl levého vnějšího konce (pod L1, čelem do +Z, zapuštěn 3.5 cm)
-            addPlinthCover(0, frontBack, leftEndBack, leftEndFace, 'Kryci_sokl_bocni_L1');
-            // 2C. Čelní krycí sokl pravého ramena (R1–R3, čelem do +Z, viditelná délka 156.0 cm)
-            addPlinthCover(frontBack, rightEndFace, frontBack, frontFace, 'Kryci_sokl_predni_pravy');
-            // 2D. Boční krycí sokl pravého vnějšího konce (pod R3, čelem do +X, zapuštěn 3.5 cm)
-            addPlinthCover(rightEndBack, rightEndFace, 0, frontBack, 'Kryci_sokl_bocni_R3');
+            // 2A. Čelní krycí sokl pod L1 (dub K529 HU, Z: 120..178.2 cm)
+            addPlinthCover(frontBack, frontFace, 120, SPEC.LEFT_ARM_LEN - t, materials.plinthMaterial, 'Kryci_sokl_predni_L1_dub');
+            // 2B. Čelní krycí sokl pod L2 (bílá matná, Z: 56.5..120 cm)
+            addPlinthCover(frontBack, frontFace, frontFace, 120, materials.whiteMatte, 'Kryci_sokl_predni_L2_bila');
+            // 2C. Čelní krycí sokl pod R1–R2 (bílá matná, X: 54.7..214.2 cm)
+            addPlinthCover(frontBack, SPEC.RIGHT_ARM_LEN - t, frontBack, frontFace, materials.whiteMatte, 'Kryci_sokl_predni_R1_R2_bila');
 
             cabinetRoot.add(plinthCoversGroup);
         }
 
         /**
-         * Sestaví kompletní 3D kuchyňskou a úložnou sestavu podle přesného zadání
+         * Sestaví kompletní 3D sestavu do pracovny podle sjednoceného technického zadání
          */
         function buildAssembly(materials) {
             cabinetRoot = new THREE.Group();
-            cabinetRoot.name = 'Kuchynska_a_ulozna_sestava_K529_HU';
+            cabinetRoot.name = 'Vestavena_sestava_pracovna_K529_HU';
 
-            const t = SPEC.BOARD_T; // 1.8 cm
-            const g = SPEC.GAP;     // 0.25 cm
+            const t = SPEC.BOARD_T;            // 1.8 cm
+            const hdf = SPEC.BACK_HDF_T;       // 0.4 cm
+            const g = SPEC.GAP;                // 0.25 cm
+            const topY = SPEC.CABINET_TOP;     // 260.0 cm (pod 2 cm stropní lištou)
+            const ceilY = SPEC.CEILING_H;      // 262.0 cm
+            const baseD = SPEC.BASE_DEPTH;     // 58.0 cm (L2, R1–R2)
+            const tallD = SPEC.TALL_DEPTH;     // 60.0 cm (L1, L3, pracovní deska)
+            const upRightD = SPEC.UPPER_RIGHT_DEPTH; // 40.0 cm (R3–R5)
+            const cf = SPEC.CORNER_FILLER;     // 4.0 cm (R1, R3, L3)
+            const cfL2 = SPEC.CORNER_FILLER_L2;// 8.0 cm (L2 od Z = 58 do Z = 66 cm)
 
             // =========================================================================
-            // 1. LEVÉ RAMENO (X: 0..60 cm, Z: 0..180 cm, výška až ke stropu Y = 262 cm)
+            // 1. LEVÉ RAMENO (X: 0..60 cm, Z: 0..180 cm, skříně do Y = 260 cm + 2 cm stropní lišta)
             // =========================================================================
 
-            // --- 1A. VYSOKÁ LEVÁ SKŘÍŇ (Z: 120..180 cm, šířka 60 cm, hloubka 60 cm, výška 262 cm) ---
+            // --- 1A. VYSOKÁ LEVÁ SKŘÍŇ L1 (Z: 120..180 cm, hloubka 60 cm, 4 vnější šuplíky + horní dvířka) ---
             const tallCabinetGroup = new THREE.Group();
-            tallCabinetGroup.name = 'Vysoka_leva_skrin_60x60x262';
+            tallCabinetGroup.name = 'L1_Vysoka_leva_skrin_60x60x260';
 
-            // Vnější levý bok korpusu (Z: 178.2..180 cm, Y: 10..262 cm, X: 0..58.2 cm) – korpus stojí na rektifikačních nožkách v Y = 10 cm
-            tallCabinetGroup.add(createPanelBox(0, 60 - t, 10, 262, 180 - t, 180, materials.oakVertical, 'Bok_vysoka_vnejsi_Z180'));
-            // Vnitřní pravý bok korpusu (Z: 120..121.8 cm, Y: 10..262 cm, X: 0..58.2 cm)
-            tallCabinetGroup.add(createPanelBox(0, 60 - t, 10, 262, 120, 120 + t, materials.carcassOak, 'Bok_vysoka_vnitrni_Z120'));
-            // Dno (Y: 10..11.8 cm -> horní plocha v Y = 11.8 cm), půda a záda
-            tallCabinetGroup.add(createPanelBox(0, 60 - t, 10, 10 + t, 120 + t, 180 - t, materials.carcassOak, 'Dno_vysoka_Y12'));
-            tallCabinetGroup.add(createPanelBox(0, 60 - t, 262 - t, 262, 120 + t, 180 - t, materials.carcassOak, 'Puda_vysoka_Y262'));
-            tallCabinetGroup.add(createPanelBox(0, t, 10 + t, 262 - t, 120 + t, 180 - t, materials.carcassOak, 'Zada_vysoka'));
-            // Vymezovací lišta na straně pantů (2.5 cm, Z: 175.7..178.2 cm) – zajišťuje průchod 4 vnitřních zásuvek kolem pantů
-            const l1HingeSpacer = 2.5;
-            tallCabinetGroup.add(createPanelBox(t, 57.0, 10 + t, 121, 180 - t - l1HingeSpacer, 180 - t, materials.carcassOak, 'Vymezovaci_lista_L1_panty'));
+            // Vnější levá pohledová bočnice až na podlahu (Z: 178.2..180 cm, Y: 0..260 cm, X: 0..58.2 cm)
+            tallCabinetGroup.add(createPanelBox(0, tallD - t, 0, topY, 180 - t, 180, materials.oakVertical, 'Bok_L1_vnejsi_Z180_na_podlahu'));
+            // Dno korpusu na nožkách (Y: 10..11.8 cm, Z: 120..178.2 cm) – pravý vnitřní bok stojí NA dně
+            tallCabinetGroup.add(createPanelBox(0, tallD - t, 10, 10 + t, 120, 180 - t, materials.carcassOak, 'Dno_L1_Y10'));
+            // Vnitřní pravý bok korpusu (Z: 120..121.8 cm, Y: 11.8..260 cm)
+            tallCabinetGroup.add(createPanelBox(0, tallD - t, 10 + t, topY, 120, 120 + t, materials.carcassOak, 'Bok_L1_vnitrni_Z120'));
+            // Půda a záda
+            tallCabinetGroup.add(createPanelBox(0, tallD - t, topY - t, topY, 120 + t, 180 - t, materials.carcassOak, 'Puda_L1_Y260'));
+            tallCabinetGroup.add(createPanelBox(0, t, 10 + t, topY - t, 120 + t, 180 - t, materials.carcassOak, 'Zada_L1'));
+            // Pevná dělicí příčka nad 4 vnějšími šuplíky (Y: 114.0..115.8 cm)
+            const l1DivY = SPEC.L1_DRAWERS_TOP; // 114.0 cm
+            tallCabinetGroup.add(createPanelBox(t, tallD - t, l1DivY, l1DivY + t, 120 + t, 180 - t, materials.carcassOak, 'Pricka_L1_nad_supliky_Y114'));
 
-            // Vnitřní police nad 4 šuplíky: 1. krycí police těsně nad horním šuplíkem (Y = 121 cm, mezera 2 cm),
-            // zbývající 3 police rovnoměrně rozmístěny po ~33 cm (Y = 156, 191, 225 cm)
-            [121, 156, 191, 225].forEach((shelfY, idx) => {
+            // 3 přestavitelné police v horní skříňové části L1 -> 4 rovnoměrné přihrádky po 34.2–34.3 cm (pohodlně pro A4 šanony)
+            [150.0, 186.1, 222.2].forEach((shelfY, idx) => {
                 tallCabinetGroup.add(createPanelBox(
-                    t, 56.8,
+                    t, tallD - t - 1.4,
                     shelfY, shelfY + t,
                     120 + t, 180 - t,
                     materials.carcassOak,
-                    `Police_vysoka_Y${shelfY}_${idx + 1}`
+                    `Police_L1_Y${Math.round(shelfY)}_${idx + 1}`
                 ));
             });
 
-            // 4 VÝSUVNÉ VNITŘNÍ ZÁSUVKY (šuplíky) skryté za vysokými dveřmi (X: 3..57 cm, Z: 123..174.5 cm)
-            // Přesné úrovně Y: 13..38, 40..65, 67..92, 94..119 cm
-            const internalDrawerLevels = [
-                { y1: 13, y2: 38, idx: 1 },
-                { y1: 40, y2: 65, idx: 2 },
-                { y1: 67, y2: 92, idx: 3 },
-                { y1: 94, y2: 119, idx: 4 }
+            // Horní stropní krycí / dorazová lišta nad L1 (Y: 260..262 cm, zapuštěna v líci korpusu + boční dořez)
+            tallCabinetGroup.add(createPanelBox(tallD - 2 * t, tallD - t, topY, ceilY, 120, 180 - t, materials.oakHorizontal, 'Stropni_lista_L1_predni'));
+            tallCabinetGroup.add(createPanelBox(0, tallD - t, topY, ceilY, 180 - t, 180, materials.oakHorizontal, 'Stropni_lista_L1_bocni'));
+
+            // 4 VNĚJŠÍ ZÁSUVKY V L1 (Y: 10..36, 36..62, 62..88, 88..114 cm -> 4 × 26 cm, svislá léta K529 HU)
+            const l1DrawerRows = [
+                { y1: 10 + g, y2: 36 - g, idx: 1, name: 'spodní' },
+                { y1: 36 + g, y2: 62 - g, idx: 2, name: '2. odspodu' },
+                { y1: 62 + g, y2: 88 - g, idx: 3, name: '3. odspodu' },
+                { y1: 88 + g, y2: 114 - g, idx: 4, name: 'horní' }
             ];
 
-            internalDrawers = [];
-            internalDrawerLevels.forEach(lvl => {
-                const dH = lvl.y2 - lvl.y1; // 25 cm
-                const yMid = (lvl.y1 + lvl.y2) / 2;
-                const zMin = 123.0;
-                const zMax = 180 - t - l1HingeSpacer - 1.2; // 174.5 cm (1.2 cm mezera pro pravý pojezd)
+            l1ExternalDrawers = [];
+            const l1FrontW = (180 - g) - (120 + g); // 59.5 cm
+            const l1CenterZ = 150.0;
 
-                // Kovové výsuvy na bočních stěnách korpusu a vymezovací liště
-                tallCabinetGroup.add(createPanelBox(4, 56, yMid - 1.5, yMid + 1.5, 120 + t, zMin - 0.3, materials.steelSlide, `Vysuv_levy_suplik_${lvl.idx}`));
-                tallCabinetGroup.add(createPanelBox(4, 56, yMid - 1.5, yMid + 1.5, zMax + 0.3, 180 - t - l1HingeSpacer, materials.steelSlide, `Vysuv_pravy_suplik_${lvl.idx}`));
+            l1DrawerRows.forEach(row => {
+                const dH = row.y2 - row.y1; // 25.5 cm
+                const yMid = (row.y1 + row.y2) / 2;
 
-                // Samotná výsuvná zásuvková krabice (X: 3..57 cm, Z: 123..174.5 cm)
-                const drawerUnit = new THREE.Group();
-                drawerUnit.position.set(0, 0, 0); // Posun along +X při vysunutí
-                drawerUnit.name = `Vnitrni_suplik_${lvl.idx}_Y${lvl.y1}_${lvl.y2}`;
+                const drawerGroup = new THREE.Group();
+                drawerGroup.position.set(tallD - t, yMid, l1CenterZ);
+                drawerGroup.name = `Suplik_L1_Rada${row.idx}`;
 
-                const xBack = 3.0;
-                const xFront = 57.0;
+                // Čelo zásuvky (svislá léta K529 HU)
+                const frontMesh = new THREE.Mesh(
+                    new THREE.BoxGeometry(t, dH, l1FrontW),
+                    materials.oakVertical
+                );
+                frontMesh.position.set(t / 2, 0, 0);
+                frontMesh.castShadow = true;
+                frontMesh.receiveShadow = true;
+                drawerGroup.add(frontMesh);
+
+                // Dutá vnitřní zásuvková krabice (světlost L1 = 56.4 cm -> krabice 53.2 cm + pojezdy 2 × 0.5 cm; dno 6.5 mm nad dnem korpusu)
+                const boxW = 53.2;
+                const boxH = 20.5;
+                const boxD = 48.0;
                 const boxT = 1.6;
+                const bottomT = 1.2;
+                const yBot = -dH / 2 + 2.2;
+                const yTop = yBot + boxH;
+                const yBoxMid = (yBot + yTop) / 2;
 
-                // Čelo vnitřního šuplíku v dekoru Hudson Dub Zlatý (X: 55.2..57.0 cm) s horním ergonomickým výřezem
-                const frontHeight = dH - 3.2; // Horní 3.2 cm výřez pro pohodlné uchopení prsty
-                drawerUnit.add(createPanelBox(
-                    xFront - t, xFront,
-                    lvl.y1, lvl.y1 + frontHeight,
-                    zMin, zMax,
-                    materials.oakVertical,
-                    `Celo_vnitrni_suplik_${lvl.idx}`
-                ));
+                drawerGroup.add(createPanelBox(-boxD, 0, yBot, yTop, -boxW / 2, -boxW / 2 + boxT, materials.carcassOak, `Bocnice_P_L1_${row.idx}`));
+                drawerGroup.add(createPanelBox(-boxD, 0, yBot, yTop, boxW / 2 - boxT, boxW / 2, materials.carcassOak, `Bocnice_L_L1_${row.idx}`));
+                drawerGroup.add(createPanelBox(-boxD, -boxD + boxT, yBot, yTop, -boxW / 2 + boxT, boxW / 2 - boxT, materials.carcassOak, `Zada_L1_${row.idx}`));
+                drawerGroup.add(createPanelBox(-boxD + boxT, 0, yBot, yBot + bottomT, -boxW / 2 + boxT, boxW / 2 - boxT, materials.carcassOak, `Dno_L1_${row.idx}`));
+                drawerGroup.add(createPanelBox(-boxD + 2, -1, yBoxMid - 1.2, yBoxMid + 1.2, -boxW / 2 - 0.5, -boxW / 2, materials.steelSlide, `Pojezd_P_L1_${row.idx}`));
+                drawerGroup.add(createPanelBox(-boxD + 2, -1, yBoxMid - 1.2, yBoxMid + 1.2, boxW / 2, boxW / 2 + 0.5, materials.steelSlide, `Pojezd_L_L1_${row.idx}`));
 
-                // Elegantní nízkoprofilová matně niklová lištová úchytka na horní hraně čela vnitřního šuplíku (nepřesahuje X = 57.6 cm, takže nebrání zavření dveří)
-                drawerUnit.add(createPanelBox(
-                    xFront - 0.3, xFront + 0.6,
-                    lvl.y1 + frontHeight - 1.4, lvl.y1 + frontHeight + 0.3,
-                    (zMin + zMax) / 2 - 8, (zMin + zMax) / 2 + 8,
-                    materials.matteNickelMetal,
-                    `Lista_uchyt_suplik_${lvl.idx}`
-                ));
-
-                // Bočnice zásuvkové krabice (Z = 123..124.6 a Z = 172.9..174.5)
-                drawerUnit.add(createPanelBox(xBack, xFront - t, lvl.y1, lvl.y2, zMin, zMin + boxT, materials.carcassOak, `Bocnice_L_suplik_${lvl.idx}`));
-                drawerUnit.add(createPanelBox(xBack, xFront - t, lvl.y1, lvl.y2, zMax - boxT, zMax, materials.carcassOak, `Bocnice_P_suplik_${lvl.idx}`));
-
-                // Zadní čelo zásuvkové krabice (X: 3.0..4.6 cm)
-                drawerUnit.add(createPanelBox(xBack, xBack + boxT, lvl.y1, lvl.y2, zMin + boxT, zMax - boxT, materials.carcassOak, `Zada_suplik_${lvl.idx}`));
-
-                // Dno zásuvkové krabice (Y: lvl.y1..lvl.y1 + 1.2 cm)
-                drawerUnit.add(createPanelBox(xBack + boxT, xFront - t, lvl.y1, lvl.y1 + 1.2, zMin + boxT, zMax - boxT, materials.carcassOak, `Dno_suplik_${lvl.idx}`));
-
-                // Teleskopické pojezdy upevněné na bocích zásuvky
-                drawerUnit.add(createPanelBox(6, xFront - t, yMid - 1.0, yMid + 1.0, zMin - 0.3, zMin, materials.steelSlide, `Pojezd_L_suplik_${lvl.idx}`));
-                drawerUnit.add(createPanelBox(6, xFront - t, yMid - 1.0, yMid + 1.0, zMax, zMax + 0.3, materials.steelSlide, `Pojezd_P_suplik_${lvl.idx}`));
-
-                tallCabinetGroup.add(drawerUnit);
+                // Vodorovná úchytka TULIP IDA 160 mm (nikl matný), na střed šířky a 5 cm od horní hrany čela
+                const handleMesh = createStandardHandle(materials.matteNickelMetal, true);
+                handleMesh.rotation.y = Math.PI / 2;
+                handleMesh.position.set(t, (dH / 2) - 5.0, 0);
+                drawerGroup.add(handleMesh);
 
                 const drawerData = {
-                    type: 'internalDrawer',
-                    name: `Vnitrni_suplik_${lvl.idx}`,
-                    label: `[L1] Vnitřní šuplík č. ${lvl.idx} (Y: ${lvl.y1}–${lvl.y2} cm)`,
-                    group: drawerUnit,
-                    closedX: 0,
-                    openX: 38, // Vysunutí o 38 cm dopředu při otevřených dveřích
-                    currentX: 0,
-                    targetX: 0,
+                    type: 'l1Drawer',
+                    name: `Suplik_L1_Rada${row.idx}`,
+                    label: `[L1] Vnější šuplík č. ${row.idx} (${row.name}, 60 × 26 cm)`,
+                    group: drawerGroup,
+                    closedX: tallD - t,
+                    openX: (tallD - t) + 34,
+                    currentX: tallD - t,
+                    targetX: tallD - t,
                     delayTimer: 0,
                     isOpen: false
                 };
 
-                bindInteractiveMeshes(drawerUnit, drawerData);
+                bindInteractiveMeshes(drawerGroup, drawerData);
                 interactiveItems.push(drawerData);
-                internalDrawers.push(drawerData);
+                l1ExternalDrawers.push(drawerData);
+                tallCabinetGroup.add(drawerGroup);
             });
 
-            // Jedny celistvé vysoké dveře na přední straně (X = 60, Z = 120..180, Y = 10..262 cm)
-            // Panty vlevo (Z = 180), otevírají se ven doleva až o 110°, svislá úchytka TULIP IDA 160 mm (nikl matný) vpravo 50 mm od hrany, spodní konec v Y = 100 cm (střed 108 cm) dle kuchyně.pdf
-            const tallDoorW = (180 - g) - (120 + g); // 59.5 cm
-            const tallDoorH = (262 - g) - (10 + g);  // 251.5 cm
+            // Horní otočná dvířka L1 nad 4 zásuvkami (Y: 114.25..259.75 cm -> 60 × 146 cm), panty vlevo (Z = 179.75), otevírání 110°
+            const l1DoorW = l1FrontW;                               // 59.5 cm
+            const l1DoorH = (topY - g) - (l1DivY + g);              // 145.5 cm
+            const l1DoorMidY = (l1DivY + topY) / 2;                 // 187.0 cm
             tallCabinetDoor = createHingedDoor({
-                name: 'Dvere_vysoka_leva_skrin_60x252',
-                label: '[L1] Vysoké levé dveře (60 × 252 cm) – ukrývají 4 šuplíky',
-                hingePos: { x: 60 - t, y: (10 + 262) / 2, z: 180 - g },
-                doorWidth: tallDoorW,
-                doorHeight: tallDoorH,
+                name: 'Dvere_L1_horni_60x146',
+                label: '[L1] Horní dvířka (60 × 146 cm, 4 přihrádky pro A4 šanony)',
+                hingePos: { x: tallD, y: l1DoorMidY, z: 180 - g },
+                doorWidth: l1DoorW,
+                doorHeight: l1DoorH,
                 doorThick: t,
                 facing: '+X',
                 hingeSide: 'left',
-                openAngleRad: -(110 * Math.PI) / 180, // Otevření ven doleva o 110°
-                handlePosLocal: { u: (tallDoorW / 2) - 5.0, v: 108 - ((10 + 262) / 2) }, // 50 mm od hrany (Z ≈ 125), Y = 100..116 cm (střed 108)
+                openAngleRad: -(110 * Math.PI) / 180,
+                handlePosLocal: { u: (l1DoorW / 2) - 5.0, v: (l1DivY + g + 5.0 + SPEC.HANDLE_LEN / 2) - l1DoorMidY }, // 5 cm od pravé a spodní hrany (Y ≈ 119..135 cm)
                 materials
             });
             tallCabinetGroup.add(tallCabinetDoor.pivot);
             cabinetRoot.add(tallCabinetGroup);
 
-            // --- 1B. SPODNÍ ROHOVÁ SKŘÍŇKA V LEVÉ ČÁSTI (Z: 0..120 cm, X: 0..60 cm, Y: 0..82 cm + deska 82..86 cm) ---
+            // --- 1B. SPODNÍ ROHOVÁ SKŘÍŇKA L2 (Z: 0..120 cm, hloubka 60 cm v líci s L1, BÍLÁ MATNÁ, Y: 10..82 cm) ---
             const lowerLeftGroup = new THREE.Group();
-            lowerLeftGroup.name = 'Spodni_rohova_skrinka_leva_1_dvere';
-            const cf = SPEC.CORNER_FILLER;       // 4.0 cm rohová vymezovací lišta v R1 a v horním rohu L3–R4
-            const cfL2 = SPEC.CORNER_FILLER_L2; // 6.0 cm rohová vymezovací lišta na straně L2 (průchod kolem úchytek R1)
+            lowerLeftGroup.name = 'L2_Spodni_rohova_skrinka_120x60x72_bila';
 
-            // Korpus Y = 10..82 cm, X = 0..58.2 cm, Z = 0..120 cm (v rohové zóně Z = 0..58.2 cm napojen bez mezery až na X = 60 cm k R1)
-            lowerLeftGroup.add(createPanelBox(0, 60 - t, 10, 10 + t, 0, 120, materials.carcassOak, 'Dno_spodni_leva'));
-            lowerLeftGroup.add(createPanelBox(60 - t, 60, 10, 10 + t, 0, 60 - t, materials.carcassOak, 'Dno_spodni_leva_roh'));
-            lowerLeftGroup.add(createPanelBox(0, 60 - t, 82 - t, 82, 0, 120, materials.carcassOak, 'Strop_korpus_spodni_leva'));
-            lowerLeftGroup.add(createPanelBox(60 - t, 60, 82 - t, 82, 0, 60 - t, materials.carcassOak, 'Strop_korpus_spodni_leva_roh'));
-            lowerLeftGroup.add(createPanelBox(0, 60 - t, 10 + t, 82 - t, 120 - t, 120, materials.carcassOak, 'Bok_spodni_leva_Z120'));
-            lowerLeftGroup.add(createPanelBox(t, 60, 10 + t, 82 - t, 0, t, materials.carcassOak, 'Bok_spodni_leva_Z0'));
-            lowerLeftGroup.add(createPanelBox(0, t, 10 + t, 82 - t, 0, 120 - t, materials.carcassOak, 'Zada_spodni_leva'));
-            // Rohová vymezovací lišta na straně L2 (Z: 58.2..66.0 cm, X: 58.2..60.0 cm, Y: 10..82 cm) – uzavírá roh bez spáry a vytváří 6 cm odsazení pantu
-            lowerLeftGroup.add(createPanelBox(60 - t, 60, 10, 82, 60 - t, 60 + cfL2, materials.oakVertical, 'Rohova_lista_L2'));
-            // Vnitřní police ve výšce Y = 46 cm + středová podpěrná stojina proti průhybu na rozpětí 120 cm
-            lowerLeftGroup.add(createPanelBox(t, 56, 46, 46 + t, t, 120 - t, materials.carcassOak, 'Police_spodni_leva'));
-            lowerLeftGroup.add(createPanelBox(50, 56, 10 + t, 46, 60 - t, 60, materials.carcassOak, 'Sloupek_podpera_L2_dolni'));
-            lowerLeftGroup.add(createPanelBox(50, 56, 46 + t, 82 - t, 60 - t, 60, materials.carcassOak, 'Sloupek_podpera_L2_horni'));
+            // Bílý korpus hloubky 58.2 cm (v líci s L1 i 60 cm pracovní deskou; boky stojí NA dně)
+            lowerLeftGroup.add(createPanelBox(0, baseD - t, 10, 10 + t, 0, 120, materials.whiteCarcass, 'Dno_L2'));
+            lowerLeftGroup.add(createPanelBox(baseD - t, baseD, 10, 10 + t, 0, baseD - t, materials.whiteCarcass, 'Dno_L2_roh'));
+            lowerLeftGroup.add(createPanelBox(0, baseD - t, 82 - t, 82, 0, 120, materials.whiteCarcass, 'Strop_korpus_L2'));
+            lowerLeftGroup.add(createPanelBox(baseD - t, baseD, 82 - t, 82, 0, baseD - t, materials.whiteCarcass, 'Strop_korpus_L2_roh'));
+            lowerLeftGroup.add(createPanelBox(0, baseD - t, 10 + t, 82 - t, 120 - t, 120, materials.whiteCarcass, 'Bok_L2_Z120'));
+            lowerLeftGroup.add(createPanelBox(t, baseD, 10 + t, 82 - t, 0, t, materials.whiteCarcass, 'Bok_L2_Z0'));
+            lowerLeftGroup.add(createPanelBox(0, t, 10 + t, 82 - t, 0, 120 - t, materials.whiteCarcass, 'Zada_L2'));
+            // Slepý čelní díl za rohem (kotvení pantů pro slepý roh) + 8 cm bílá pohledová rohová lišta (Z: 60..68 cm)
+            lowerLeftGroup.add(createPanelBox(baseD - t, baseD, 10, 82, t, baseD - t, materials.whiteCarcass, 'Slepy_celni_dil_L2'));
+            lowerLeftGroup.add(createPanelBox(baseD - t, baseD, 10, 82, baseD - t, baseD + cfL2, materials.whiteMatte, 'Rohova_lista_L2_8cm_bila'));
+            // Vnitřní police ve výšce Y = 46 cm + středová podpěrná stojina
+            lowerLeftGroup.add(createPanelBox(t, baseD - t - 1.7, 46, 46 + t, t, 120 - t, materials.whiteCarcass, 'Police_L2'));
+            lowerLeftGroup.add(createPanelBox(baseD - 10, baseD - 4, 10 + t, 46, 60 - t, 60, materials.whiteCarcass, 'Sloupek_podpera_L2_dolni'));
+            lowerLeftGroup.add(createPanelBox(baseD - 10, baseD - 4, 46 + t, 82 - t, 60 - t, 60, materials.whiteCarcass, 'Sloupek_podpera_L2_horni'));
 
-            // JEDNA CELISTVÁ DVEŘE bez dělení (Z = 66..120, Y = 10..82 cm -> 54 × 72 cm), panty vpravo (Z = 66.25) s 6 cm odsazením od rohu, svislá úchytka TULIP IDA 160 mm 50 mm od levé a horní hrany dle kuchyně.pdf
-            const lowLeftDoorW = (120 - g) - (60 + cfL2 + g); // 53.5 cm
-            const lowLeftDoorH = (82 - g) - (10 + g);          // 71.5 cm
+            // Celistvá bílá dvířka L2 (Z = 68..120 -> 52 × 72 cm), panty vpravo (Z = 68.25), omezovač úhlu otevření 86° (rezerva 6.3 cm k úchytce R1)
+            const lowLeftDoorW = (120 - g) - (baseD + cfL2 + g); // 51.5 cm
+            const lowLeftDoorH = (82 - g) - (10 + g);            // 71.5 cm
             const lowLeftDoor = createHingedDoor({
-                name: 'Dvere_spodni_leva_celistve_54x72',
-                label: '[L2] Spodní levé dveře – celistvé (54 × 72 cm + 6 cm rohová lišta)',
-                hingePos: { x: 60 - t, y: (10 + 82) / 2, z: 60 + cfL2 + g },
+                name: 'Dvere_L2_52x72_bila',
+                label: '[L2] Spodní rohová dvířka – bílá mat (52 × 72 cm + 8 cm lišta, omezovač 86°)',
+                hingePos: { x: baseD, y: (10 + 82) / 2, z: baseD + cfL2 + g },
                 doorWidth: lowLeftDoorW,
                 doorHeight: lowLeftDoorH,
                 doorThick: t,
                 facing: '+X',
                 hingeSide: 'right',
-                openAngleRad: (90 * Math.PI) / 180, // Otevření 90° s 1.85 cm rezervou od úchytek R1 (Z = 62.6 vs 64.45 cm)
-                handlePosLocal: { u: -(lowLeftDoorW / 2) + 5.0, v: (82 - g - 5.0 - SPEC.HANDLE_LEN / 2) - ((10 + 82) / 2) }, // 50 mm od hrany (Z ≈ 115), 50 mm od horní hrany (Y = 60.75..76.75)
+                openAngleRad: (86 * Math.PI) / 180,
+                handlePosLocal: { u: -(lowLeftDoorW / 2) + 5.0, v: (82 - g - 5.0 - SPEC.HANDLE_LEN / 2) - ((10 + 82) / 2) },
+                doorMaterial: materials.whiteMatte,
                 materials
             });
             lowerLeftGroup.add(lowLeftDoor.pivot);
             cabinetRoot.add(lowerLeftGroup);
 
-            // --- 1C. HORNÍ ROHOVÁ SKŘÍŇKA V LEVÉ ČÁSTI (Z: 0..120 cm, X: 0..60 cm, dvířka Y: 151..262 cm, korpus Y: 152.5..262 cm se spodním přesahem dvířek 15 mm) ---
+            // --- 1C. HORNÍ ROHOVÁ SKŘÍŇKA L3 (Z: 0..120 cm, hloubka 60 cm v líci s L1/L2, dvířka Y: 151..260 cm + 2 cm stropní lišta) ---
             const upperLeftGroup = new THREE.Group();
-            upperLeftGroup.name = 'Horni_rohova_skrinka_leva_1_dvere';
-            const upCarcassBottom = SPEC.UPPER_BOTTOM + SPEC.UPPER_DOOR_OVERHANG; // 152.5 cm (spodní přesah dvířek 15 mm)
+            upperLeftGroup.name = 'L3_Horni_rohova_skrinka_120x60x109';
+            const upCarcassBottom = SPEC.UPPER_BOTTOM + SPEC.UPPER_DOOR_OVERHANG; // 152.5 cm
 
-            // Korpus hloubky 60 cm (X = 0..58.2 cm, Z = 0..120 cm, Y = 152.5..262 cm)
-            // V rohové zóně Z = 0..38.2 cm napojen bez mezery až na X = 60 cm k R4
-            upperLeftGroup.add(createPanelBox(0, 60 - t, upCarcassBottom, upCarcassBottom + t, 0, 120, materials.oakVertical, 'Dno_horni_leva'));
-            upperLeftGroup.add(createPanelBox(60 - t, 60, upCarcassBottom, upCarcassBottom + t, 0, 40 - t, materials.oakVertical, 'Dno_horni_leva_roh'));
-            upperLeftGroup.add(createPanelBox(0, 60 - t, 262 - t, 262, 0, 120, materials.carcassOak, 'Puda_horni_leva'));
-            upperLeftGroup.add(createPanelBox(60 - t, 60, 262 - t, 262, 0, 40 - t, materials.carcassOak, 'Puda_horni_leva_roh'));
-            upperLeftGroup.add(createPanelBox(0, 60 - t, upCarcassBottom + t, 262 - t, 120 - t, 120, materials.carcassOak, 'Bok_horni_leva_Z120'));
-            upperLeftGroup.add(createPanelBox(0, 60, upCarcassBottom + t, 262 - t, 0, t, materials.carcassOak, 'Bok_horni_leva_Z0'));
-            upperLeftGroup.add(createPanelBox(0, t, upCarcassBottom + t, 262 - t, t, 120 - t, materials.carcassOak, 'Zada_horni_leva'));
-            // Rohová vymezovací lišta na straně L3 (Z: 38.2..44.0 cm, X: 58.2..60.0 cm) – uzavírá roh bez spáry a vytváří 4 cm odsazení pantu
-            upperLeftGroup.add(createPanelBox(60 - t, 60, SPEC.UPPER_BOTTOM, 262, 40 - t, 40 + cf, materials.oakVertical, 'Rohova_lista_L3'));
-            // 2 vnitřní police (Y = 188 a Y = 225 cm) + podpěrné sloupky proti průhybu na rozpětí 120 cm
-            [188, 225].forEach((sy, i) => {
-                upperLeftGroup.add(createPanelBox(t, 56, sy, sy + t, t, 120 - t, materials.carcassOak, `Police_horni_leva_${i + 1}`));
+            upperLeftGroup.add(createPanelBox(0, tallD - t, upCarcassBottom, upCarcassBottom + t, 0, 120, materials.oakVertical, 'Dno_L3'));
+            upperLeftGroup.add(createPanelBox(0, tallD - t, topY - t, topY, 0, 120, materials.carcassOak, 'Puda_L3'));
+            upperLeftGroup.add(createPanelBox(0, tallD - t, upCarcassBottom + t, topY - t, 120 - t, 120, materials.carcassOak, 'Bok_L3_Z120'));
+            upperLeftGroup.add(createPanelBox(0, tallD, upCarcassBottom + t, topY - t, 0, t, materials.carcassOak, 'Bok_L3_Z0'));
+            upperLeftGroup.add(createPanelBox(0, t, upCarcassBottom + t, topY - t, t, 120 - t, materials.carcassOak, 'Zada_L3'));
+            // Slepý čelní díl (plnohodnotné kotvení pantů pro slepý roh – těsně navazuje na levý bok R3 v X = 60 bez jakékoliv mezery) + 4 cm rohová lišta
+            upperLeftGroup.add(createPanelBox(tallD - t, tallD, upCarcassBottom, topY, t, upRightD - t, materials.carcassOak, 'Slepy_celni_dil_L3'));
+            upperLeftGroup.add(createPanelBox(tallD - t, tallD, SPEC.UPPER_BOTTOM, topY, upRightD - t, upRightD + cf, materials.oakVertical, 'Rohova_lista_L3_4cm'));
+            // 2 vnitřní police (Y = 187.7 a 223.0 cm -> 3 rovnoměrné přihrádky 33.4–33.5 cm) + podpěrné sloupky
+            [187.7, 223.0].forEach((sy, i) => {
+                upperLeftGroup.add(createPanelBox(t, tallD - t - 2.2, sy, sy + t, t, 120 - t, materials.carcassOak, `Police_L3_${i + 1}`));
             });
-            upperLeftGroup.add(createPanelBox(50, 56, upCarcassBottom + t, 188, 40 - t, 40, materials.carcassOak, 'Sloupek_podpera_L3_dolni'));
-            upperLeftGroup.add(createPanelBox(50, 56, 188 + t, 225, 40 - t, 40, materials.carcassOak, 'Sloupek_podpera_L3_stred'));
-            upperLeftGroup.add(createPanelBox(50, 56, 225 + t, 262 - t, 40 - t, 40, materials.carcassOak, 'Sloupek_podpera_L3_horni'));
+            upperLeftGroup.add(createPanelBox(50, 56, upCarcassBottom + t, 187.7, upRightD - t, upRightD, materials.carcassOak, 'Sloupek_podpera_L3_dolni'));
+            upperLeftGroup.add(createPanelBox(50, 56, 187.7 + t, 223.0, upRightD - t, upRightD, materials.carcassOak, 'Sloupek_podpera_L3_stred'));
+            upperLeftGroup.add(createPanelBox(50, 56, 223.0 + t, topY - t, upRightD - t, upRightD, materials.carcassOak, 'Sloupek_podpera_L3_horni'));
+            // Stropní krycí lišta nad L3 (Y: 260..262 cm)
+            upperLeftGroup.add(createPanelBox(tallD - 2 * t, tallD - t, topY, ceilY, upRightD - t, 120, materials.oakHorizontal, 'Stropni_lista_L3'));
 
-            // JEDNA CELISTVÁ DVEŘE bez úchytky – otevírání spodním přesahem dvířek 15 mm (Z = 44..120, Y = 151..261.75 cm -> 76 × 111 cm), panty vpravo (Z = 44.25) s 4 cm odsazením od rohu
-            const upLeftDoorW = (120 - g) - (40 + cf + g);      // 75.5 cm
-            const upLeftDoorH = (262 - g) - SPEC.UPPER_BOTTOM;  // 110.75 cm (přesahuje 1.5 cm pod dno korpusu)
+            // Jedna celistvá dvířka L3 bez úchytky (Z = 44..120 -> 76 × 109 cm, spodní přesah 15 mm)
+            const upLeftDoorW = (120 - g) - (upRightD + cf + g); // 75.5 cm
+            const upLeftDoorH = (topY - g) - SPEC.UPPER_BOTTOM;  // 108.75 cm
             const upLeftDoor = createHingedDoor({
-                name: 'Dvere_horni_leva_celistve_76x111',
-                label: '[L3] Horní levé dveře – celistvé (76 × 111 cm, spodní přesah 15 mm)',
-                hingePos: { x: 60 - t, y: (SPEC.UPPER_BOTTOM + (262 - g)) / 2, z: 40 + cf + g },
+                name: 'Dvere_L3_76x109',
+                label: '[L3] Horní rohová dvířka (76 × 109 cm, spodní přesah 15 mm)',
+                hingePos: { x: tallD, y: (SPEC.UPPER_BOTTOM + (topY - g)) / 2, z: upRightD + cf + g },
                 doorWidth: upLeftDoorW,
                 doorHeight: upLeftDoorH,
                 doorThick: t,
                 facing: '+X',
                 hingeSide: 'right',
-                openAngleRad: (90 * Math.PI) / 180, // Otevření 90° s 2.45 cm rezervou od čela R4
-                handlePosLocal: null, // Bez úchytky – otevírání spodním přesahem dvířek (15 mm) dle kuchyně.pdf
+                openAngleRad: (90 * Math.PI) / 180,
+                handlePosLocal: null,
                 materials
             });
             upperLeftGroup.add(upLeftDoor.pivot);
             cabinetRoot.add(upperLeftGroup);
 
             // =========================================================================
-            // 2. PRAVÉ RAMENO (celková délka 216 cm = 60 + 156 cm, tj. X: 0..216 cm)
+            // 2. PRAVÉ RAMENO (celková délka 216 cm = 60 cm roh + 156 cm viditelná část)
             // =========================================================================
 
-            // --- 2A. SPODNÍ ZÁSUVKOVÉ SKŘÍŇKY (X: 60..216 cm = 156 cm, hloubka Z: 0..60 cm, Y: 0..82 cm) ---
+            // --- 2A. SPODNÍ ŠIROKÉ ZÁSUVKOVÉ MODULY R1–R2 (4 cm lišta + 2 × 76 cm, hloubka 60 cm v líci, BÍLÁ MATNÁ, 6 zásuvek) ---
             const lowerRightGroup = new THREE.Group();
-            lowerRightGroup.name = 'Spodni_prave_zasuvky_156cm_9ks';
+            lowerRightGroup.name = 'R1_R2_Spodni_prave_zasuvky_2x76cm_6ks_bila';
 
-            // Pravý vnější bok korpusu (X: 214.2..216 cm, Y: 10..82 cm, Z: 0..58.2 cm) – čela R3 jej překrývají jako naložená (shodně s L1)
-            lowerRightGroup.add(createPanelBox(216 - t, 216, 10, 82, 0, 60 - t, materials.oakVertical, 'Bok_pravy_vnejsi_X216'));
-            // Korpusy 3 modulů po 52 cm (X: 60..214.2 cm, Z: 0..58.2 cm, Y: 10..82 cm)
-            lowerRightGroup.add(createPanelBox(60, 216 - t, 10, 10 + t, 0, 60 - t, materials.carcassOak, 'Dno_prave_spodni'));
-            lowerRightGroup.add(createPanelBox(60, 216 - t, 82 - t, 82, 0, 60 - t, materials.carcassOak, 'Strop_korpus_prave_spodni'));
-            lowerRightGroup.add(createPanelBox(60, 216 - t, 10 + t, 82 - t, 0, t, materials.carcassOak, 'Zada_prave_spodni'));
-            // Svislé příčky mezi 3 moduly po 52 cm (X = 60, 112, 164)
-            [60, 112 - t / 2, 164 - t / 2].forEach((px, idx) => {
-                lowerRightGroup.add(createPanelBox(px, px + t, 10 + t, 82 - t, t, 60 - t, materials.carcassOak, `Pricka_spodni_prava_${idx + 1}`));
-            });
-            // Rohová vymezovací lišta na straně R1 (X: 60..64 cm, Z: 58.2..60.0 cm, Y: 10..82 cm) + vnitřní podložka pro levé pojezdy R1
-            lowerRightGroup.add(createPanelBox(60, 60 + cf, 10, 82, 60 - t, 60, materials.oakVertical, 'Rohova_lista_R1'));
-            lowerRightGroup.add(createPanelBox(60 + t, 60 + cf + 0.9, 10 + t, 82 - t, t, 60 - t, materials.carcassOak, 'Podlozka_vysuvu_R1_L'));
+            // Bílá rohová vymezovací lišta R1 (X: 60..64 cm, Z: 58.2..60 cm, Y: 10..82 cm) + uzavřené spodní dno rohové mezery
+            lowerRightGroup.add(createPanelBox(60, 60 + cf, 10, 82, baseD - t, baseD, materials.whiteMatte, 'Rohova_lista_R1_4cm_bila'));
+            lowerRightGroup.add(createPanelBox(60, 60 + cf, 10, 10 + t, 0, baseD - t, materials.whiteCarcass, 'Dno_roh_R1_uzaver'));
 
-            // 3 sloupce po 52 cm (X: 60..112 [4 cm lišta + 48 cm šuplíky], 112..164, 164..216) × 3 široké šuplíky = 9 šuplíků
-            const colW = 52;
-            const rowBounds = [
-                { y1: 10 + g, y2: 34 - g },
-                { y1: 34 + g, y2: 58 - g },
-                { y1: 58 + g, y2: 82 - g }
+            // 2 samostatné modulární bílé korpusy R1 (X: 64..140 cm) a R2 (X: 140..216 cm) s horními luby
+            const drawerModules = [
+                { code: 'R1', x1: 64,  x2: 140, outerRightToFloor: false },
+                { code: 'R2', x1: 140, x2: 216, outerRightToFloor: true }
             ];
 
-            for (let col = 0; col < 3; col++) {
-                const x1 = (col === 0) ? (60 + cf + g) : (60 + col * colW + g);
-                const x2 = 60 + (col + 1) * colW - g; // R3 (col=2) překrývá pravý bok X216 (šířka čela 51.5 cm shodná s R2)
-                const dW = x2 - x1;
-                const xMid = (x1 + x2) / 2;
+            drawerModules.forEach(mod => {
+                const { code, x1, x2, outerRightToFloor } = mod;
+                if (outerRightToFloor) {
+                    // Vnější pravá bílá pohledová bočnice R2 sahá až na podlahu (Y: 0..82 cm)
+                    lowerRightGroup.add(createPanelBox(x2 - t, x2, 0, 82, 0, baseD - t, materials.whiteMatte, `Bok_${code}_vnejsi_X216_na_podlahu_bila`));
+                    // Dno běží pod levým bokem a doráží k vnější bočnici
+                    lowerRightGroup.add(createPanelBox(x1, x2 - t, 10, 10 + t, 0, baseD - t, materials.whiteCarcass, `Dno_${code}`));
+                } else {
+                    // Dno běží průběžně pod oběma boky R1
+                    lowerRightGroup.add(createPanelBox(x1, x2, 10, 10 + t, 0, baseD - t, materials.whiteCarcass, `Dno_${code}`));
+                    lowerRightGroup.add(createPanelBox(x2 - t, x2, 10 + t, 82, 0, baseD - t, materials.whiteCarcass, `Bok_${code}_pravy`));
+                }
+                // Levý bok stojí NA dně korpusu
+                lowerRightGroup.add(createPanelBox(x1, x1 + t, 10 + t, 82, 0, baseD - t, materials.whiteCarcass, `Bok_${code}_levy`));
+                // Záda korpusu
+                lowerRightGroup.add(createPanelBox(x1 + t, x2 - t, 10 + t, 82, 0, t, materials.whiteCarcass, `Zada_${code}`));
+                // Přední a zadní horní luby (trnože 10 cm místo plné půdy – snadná montáž desky a vůle pro horní šuplík)
+                lowerRightGroup.add(createPanelBox(x1 + t, x2 - t, 82 - t, 82, t, t + 10, materials.whiteCarcass, `Lub_zadni_${code}`));
+                lowerRightGroup.add(createPanelBox(x1 + t, x2 - t, 82 - t, 82, baseD - t - 10, baseD - t, materials.whiteCarcass, `Lub_predni_${code}`));
+            });
 
-                for (let row = 0; row < 3; row++) {
-                    const { y1, y2 } = rowBounds[row];
-                    const dH = y2 - y1;
-                    const yMid = (y1 + y2) / 2;
+            // 2 sloupce po 76 cm × 3 zásuvky (28 cm spodní + 28 cm střední + 16 cm horní mělká) = 6 bílých zásuvek celkem
+            const rightDrawerRows = [
+                { y1: 10 + g, y2: 38 - g, boxY1: 12.6, boxY2: 34.0, name: 'spodní hluboký (28 cm)' },
+                { y1: 38 + g, y2: 66 - g, boxY1: 40.6, boxY2: 62.0, name: 'střední hluboký (28 cm)' },
+                { y1: 66 + g, y2: 82 - g, boxY1: 68.0, boxY2: 79.0, name: 'horní mělký (16 cm)' }
+            ];
+
+            drawerModules.forEach((mod) => {
+                const fx1 = mod.x1 + g;
+                const fx2 = mod.x2 - g;
+                const dW = fx2 - fx1; // 75.5 cm
+                const xMid = (fx1 + fx2) / 2;
+
+                rightDrawerRows.forEach((row, rIdx) => {
+                    const dH = row.y2 - row.y1;
+                    const yMid = (row.y1 + row.y2) / 2;
 
                     const drawerGroup = new THREE.Group();
-                    drawerGroup.position.set(xMid, yMid, 60 - t);
-                    drawerGroup.name = `Suplik_pravy_S${col + 1}_R${row + 1}`;
+                    drawerGroup.position.set(xMid, yMid, baseD - t);
+                    drawerGroup.name = `Suplik_${mod.code}_R${rIdx + 1}`;
 
-                    // Čelo šuplíku s vodorovnými léty K529 HU
+                    // Čelo zásuvky – bílá matná
                     const frontMesh = new THREE.Mesh(
                         new THREE.BoxGeometry(dW, dH, t),
-                        materials.oakHorizontal
+                        materials.whiteMatte
                     );
                     frontMesh.position.set(0, 0, t / 2);
                     frontMesh.castShadow = true;
                     frontMesh.receiveShadow = true;
                     drawerGroup.add(frontMesh);
 
-                    // Dutá vnitřní zásuvková krabice (bočnice, záda, dno a ocelové pojezdy – viditelné při vysunutí)
-                    const boxW = (col === 2) ? (dW - 4.1) : (dW - 3.2);
-                    const boxShiftX = (col === 2) ? -0.45 : 0; // U R3 posun o 4.5 mm od vnějšího pravého boku (světlost 49.3 cm)
-                    const boxH = dH - 4.2;
+                    // Dutá vnitřní zásuvková krabice (bílé lamino, světlost 72.4 cm -> krabice 71.0 cm + pojezdy 2 × 0.5 cm)
+                    const boxW = 71.0;
                     const boxD = 48.0;
                     const boxT = 1.6;
                     const bottomT = 1.2;
-                    const yBot = -dH / 2 + 1.2;
-                    const yTop = yBot + boxH;
+                    const yBot = row.boxY1 - yMid;
+                    const yTop = row.boxY2 - yMid;
                     const yBoxMid = (yBot + yTop) / 2;
 
-                    // Levá a pravá bočnice zásuvky
-                    drawerGroup.add(createPanelBox(boxShiftX - boxW / 2, boxShiftX - boxW / 2 + boxT, yBot, yTop, -boxD, 0, materials.carcassOak, `Bocnice_L_R${col + 1}_R${row + 1}`));
-                    drawerGroup.add(createPanelBox(boxShiftX + boxW / 2 - boxT, boxShiftX + boxW / 2, yBot, yTop, -boxD, 0, materials.carcassOak, `Bocnice_P_R${col + 1}_R${row + 1}`));
-                    // Zadní čelo zásuvky
-                    drawerGroup.add(createPanelBox(boxShiftX - boxW / 2 + boxT, boxShiftX + boxW / 2 - boxT, yBot, yTop, -boxD, -boxD + boxT, materials.carcassOak, `Zada_R${col + 1}_R${row + 1}`));
-                    // Dno zásuvky
-                    drawerGroup.add(createPanelBox(boxShiftX - boxW / 2 + boxT, boxShiftX + boxW / 2 - boxT, yBot, yBot + bottomT, -boxD + boxT, 0, materials.carcassOak, `Dno_R${col + 1}_R${row + 1}`));
-                    // Teleskopické ocelové pojezdy na bocích zásuvky
-                    drawerGroup.add(createPanelBox(boxShiftX - boxW / 2 - 0.5, boxShiftX - boxW / 2, yBoxMid - 1.2, yBoxMid + 1.2, -boxD + 2, -1, materials.steelSlide, `Pojezd_L_R${col + 1}_R${row + 1}`));
-                    drawerGroup.add(createPanelBox(boxShiftX + boxW / 2, boxShiftX + boxW / 2 + 0.5, yBoxMid - 1.2, yBoxMid + 1.2, -boxD + 2, -1, materials.steelSlide, `Pojezd_P_R${col + 1}_R${row + 1}`));
+                    drawerGroup.add(createPanelBox(-boxW / 2, -boxW / 2 + boxT, yBot, yTop, -boxD, 0, materials.whiteCarcass, `Bocnice_L_${mod.code}_R${rIdx + 1}`));
+                    drawerGroup.add(createPanelBox(boxW / 2 - boxT, boxW / 2, yBot, yTop, -boxD, 0, materials.whiteCarcass, `Bocnice_P_${mod.code}_R${rIdx + 1}`));
+                    drawerGroup.add(createPanelBox(-boxW / 2 + boxT, boxW / 2 - boxT, yBot, yTop, -boxD, -boxD + boxT, materials.whiteCarcass, `Zada_${mod.code}_R${rIdx + 1}`));
+                    drawerGroup.add(createPanelBox(-boxW / 2 + boxT, boxW / 2 - boxT, yBot, yBot + bottomT, -boxD + boxT, 0, materials.whiteCarcass, `Dno_${mod.code}_R${rIdx + 1}`));
+                    drawerGroup.add(createPanelBox(-boxW / 2 - 0.5, -boxW / 2, yBoxMid - 1.2, yBoxMid + 1.2, -boxD + 2, -1, materials.steelSlide, `Pojezd_L_${mod.code}_R${rIdx + 1}`));
+                    drawerGroup.add(createPanelBox(boxW / 2, boxW / 2 + 0.5, yBoxMid - 1.2, yBoxMid + 1.2, -boxD + 2, -1, materials.steelSlide, `Pojezd_P_${mod.code}_R${rIdx + 1}`));
 
-                    // Vodorovná úchytka TULIP IDA 160 mm (nikl matný) na střed šířky a 50 mm pod horní hranou čela (dle kuchyně.pdf)
+                    // Vodorovná úchytka TULIP IDA 160 mm (nikl matný), na střed šířky a 5 cm pod horní hranou čela
                     const handleMesh = createStandardHandle(materials.matteNickelMetal, true);
                     handleMesh.position.set(0, (dH / 2) - 5.0, t);
                     drawerGroup.add(handleMesh);
 
-                    const rowNames = ['spodní', 'střední', 'horní'];
-                    const drawerWidthLabel = col === 0 ? '48 cm + 4 cm lišta' : '52 cm';
                     const drawerData = {
                         type: 'frontDrawer',
-                        name: `Suplik_R${col + 1}_Rada${row + 1}`,
-                        label: `[R${col + 1}] Šuplík – řada ${row + 1} (${rowNames[row]}, ${drawerWidthLabel})`,
+                        name: `Suplik_${mod.code}_Rada${rIdx + 1}`,
+                        label: `[${mod.code}] Široký šuplík – bílá mat, ${row.name} (š. 76 cm)`,
                         group: drawerGroup,
-                        closedZ: 60 - t,
-                        openZ: (60 - t) + 30,
-                        currentZ: 60 - t,
-                        targetZ: 60 - t,
+                        closedZ: baseD - t,
+                        openZ: (baseD - t) + 32,
+                        currentZ: baseD - t,
+                        targetZ: baseD - t,
                         delayTimer: 0,
                         isOpen: false
                     };
@@ -1275,100 +1294,84 @@
                     bindInteractiveMeshes(drawerGroup, drawerData);
                     interactiveItems.push(drawerData);
                     lowerRightGroup.add(drawerGroup);
-                }
-            }
-            cabinetRoot.add(lowerRightGroup);
-
-            // --- 2B. PRACOVNÍ DESKA (tloušťka 4 cm, Y: 82..86 cm, tmavě hnědý kouřový dub) ---
-            const countertopGroup = new THREE.Group();
-            countertopGroup.name = 'Pracovni_deska_kour_dub_4cm';
-            // Pravé rameno (X: 0..216.4 cm, Z: 0..60.4 cm, Y: 82..86 cm)
-            countertopGroup.add(createPanelBox(0, 216.4, 82, 86, 0, 60.4, materials.smokedOakCountertop, 'Deska_prave_rameno_216cm'));
-            // Levé rameno (X: 0..60.4 cm, Z: 60.4..120 cm, Y: 82..86 cm)
-            countertopGroup.add(createPanelBox(0, 60.4, 82, 86, 60.4, 120, materials.smokedOakCountertop, 'Deska_leve_rameno_120cm'));
-            cabinetRoot.add(countertopGroup);
-
-            // --- 2C. HORNÍ PRAVÉ SKŘÍŇKY (HLOUBKA 40 cm: Z: 0..40, dvířka Y: 151..262 cm, korpus Y: 152.5..262 cm, X: 60..216 cm = 156 cm) ---
-            const upperRightGroup = new THREE.Group();
-            upperRightGroup.name = 'Horni_prave_skrinky_hloubka_40cm';
-
-            // Korpus hloubky 40 cm (Z: 0..38.2 cm, X: 60..214.2 cm, Y: 152.5..262 cm – spodní přesah dvířek 15 mm)
-            upperRightGroup.add(createPanelBox(60, 216 - t, upCarcassBottom, upCarcassBottom + t, 0, 40 - t, materials.oakVertical, 'Dno_horni_prave_40cm'));
-            upperRightGroup.add(createPanelBox(60, 216 - t, 262 - t, 262, 0, 40 - t, materials.carcassOak, 'Puda_horni_prave_40cm'));
-            upperRightGroup.add(createPanelBox(60, 216 - t, upCarcassBottom + t, 262 - t, 0, t, materials.carcassOak, 'Zada_horni_prave_40cm'));
-            // Vnější pravý bok horní skříňky (Z: 0..38.2 cm, X: 214.2..216 cm, Y: 152.5..262 cm) – dvířka R6 jej překrývají jako naložená
-            upperRightGroup.add(createPanelBox(216 - t, 216, upCarcassBottom, 262, 0, 40 - t, materials.oakVertical, 'Bok_horni_pravy_X216'));
-            // Svislé příčky mezi 3 moduly po 52 cm (X = 60, 112, 164)
-            [60, 112 - t / 2, 164 - t / 2].forEach((px, idx) => {
-                upperRightGroup.add(createPanelBox(px, px + t, upCarcassBottom + t, 262 - t, t, 40 - t, materials.carcassOak, `Pricka_horni_prava_${idx + 1}`));
-            });
-            // 2 vnitřní police v každém z horních pravých modulů R4–R6 (Y = 188 a Y = 225 cm)
-            const upperRightBays = [
-                [60 + t, 112 - t / 2],
-                [112 + t / 2, 164 - t / 2],
-                [164 + t / 2, 216 - t]
-            ];
-            [188, 225].forEach((sy, idx) => {
-                upperRightBays.forEach(([bx1, bx2], bIdx) => {
-                    upperRightGroup.add(createPanelBox(bx1, bx2, sy, sy + t, t, 36.5, materials.carcassOak, `Police_horni_prava_M${bIdx + 4}_${idx + 1}`));
                 });
             });
+            cabinetRoot.add(lowerRightGroup);
 
-            // Rohová vymezovací lišta na straně R4 (X: 60..64 cm, Z: 38.2..40.0 cm) – plynule navazuje na L3 a zajišťuje 4 cm odsazení pantu R4
-            upperRightGroup.add(createPanelBox(60, 60 + cf, SPEC.UPPER_BOTTOM, 262, 40 - t, 40, materials.oakVertical, 'Rohova_lista_R4'));
+            // --- 2B. PRACOVNÍ DESKA (standardní hloubka 60 cm, tl. 4 cm, Y: 82..86 cm – přesně v líci s L1, L2 i R1–R2) ---
+            const countertopGroup = new THREE.Group();
+            countertopGroup.name = 'Pracovni_deska_kour_dub_60cm';
+            // Pravé rameno (216 × 60 cm, přesně v líci pravého boku X = 216 cm)
+            countertopGroup.add(createPanelBox(0, SPEC.RIGHT_ARM_LEN, 82, 86, 0, tallD, materials.smokedOakCountertop, 'Deska_prave_rameno_216x60'));
+            // Levé rameno (60 × 60 cm, přesně v líci čela L1 a L2 v X = 60 cm)
+            countertopGroup.add(createPanelBox(0, tallD, 82, 86, tallD, 120, materials.smokedOakCountertop, 'Deska_leve_rameno_60x60'));
+            cabinetRoot.add(countertopGroup);
 
-            // 3 dvířka bez úchytek – otevírání spodním přesahem dvířek 15 mm (R4: 48 cm + 4 cm rohová lišta, R5: 52 cm, R6: 52 cm; Y: 151..261.75 cm)
-            const upRightH = (262 - g) - SPEC.UPPER_BOTTOM; // 110.75 cm (přesah 15 mm pod dno korpusu)
-            const upperRightDoors = [
-                {
-                    name: 'Dvirka_horni_prava_1_X64_112',
-                    label: '[R4] 1. horní pravá dvířka (48 × 111 cm + 4 cm rohová lišta, hloubka 40 cm, spodní přesah 15 mm)',
-                    x1: 60 + cf + g,
-                    x2: 112 - g,
-                    hingeSide: 'left',
-                    openAngle: -(90 * Math.PI) / 180 // Otevření 90° s 2.45 cm rezervou od čela L3
-                },
-                {
-                    name: 'Dvirka_horni_prava_2_X112_164',
-                    label: '[R5] 2. horní pravá dvířka (52 × 111 cm, hloubka 40 cm, spodní přesah 15 mm)',
-                    x1: 112 + g,
-                    x2: 164 - g,
-                    hingeSide: 'left',
-                    openAngle: -(95 * Math.PI) / 180
-                },
-                {
-                    name: 'Dvirka_horni_prava_3_X164_216',
-                    label: '[R6] 3. horní pravá dvířka (52 × 111 cm, hloubka 40 cm, spodní přesah 15 mm)',
-                    x1: 164 + g,
-                    x2: 216 - g,
-                    hingeSide: 'right',
-                    openAngle: (95 * Math.PI) / 180
-                }
+            // --- 2C. HORNÍ PRAVÉ SKŘÍŇKY R3–R5 (hloubka 40 cm, 3 stejné moduly po 52 cm bez rohové mezery! R3 má panty vpravo -> těsné napojení na L3) ---
+            const upperRightGroup = new THREE.Group();
+            upperRightGroup.name = 'R3_R5_Horni_prave_skrinky_3x52cm_hl40';
+
+            // 3 samostatné symetrické korpusy po 52.0 cm (156 / 3 = 52 cm) – R3 navazuje přímo na X = 60 k L3 bez otvoru
+            const upModW = SPEC.RIGHT_VISIBLE_LEN / 3; // 52.0 cm přesně
+            const upperModules = [
+                { code: 'R3', x1: 60,              x2: 60 + upModW,     hingeSide: 'right', openAngle:  (90 * Math.PI) / 180, outerRight: false, leftGap: 0.3 },
+                { code: 'R4', x1: 60 + upModW,     x2: 60 + 2 * upModW, hingeSide: 'left',  openAngle: -(90 * Math.PI) / 180, outerRight: false, leftGap: g },
+                { code: 'R5', x1: 60 + 2 * upModW, x2: 216,             hingeSide: 'right', openAngle:  (95 * Math.PI) / 180, outerRight: true,  leftGap: g }
             ];
 
-            upperRightDoors.forEach(spec => {
-                const w = spec.x2 - spec.x1;
-                const hingeX = spec.hingeSide === 'left' ? spec.x1 : spec.x2;
+            const upRightH = (topY - g) - SPEC.UPPER_BOTTOM; // 108.75 cm
+
+            upperModules.forEach(mod => {
+                const { code, x1, x2, hingeSide, openAngle, outerRight, leftGap } = mod;
+                // Levý bok korpusu (u R3 v X = 60.0..61.8 přímo doráží na slepý díl L3 – nulová mezera)
+                upperRightGroup.add(createPanelBox(x1, x1 + t, upCarcassBottom, topY, 0, upRightD - t, materials.carcassOak, `Bok_${code}_levy`));
+                // Pravý bok korpusu (u R5 pohledový vnější bok protažený o 15 mm na Y = 151 cm – kryje boční schod přesahu dvířek)
+                upperRightGroup.add(createPanelBox(
+                    x2 - t, x2,
+                    outerRight ? SPEC.UPPER_BOTTOM : upCarcassBottom, topY,
+                    0, upRightD - t,
+                    outerRight ? materials.oakVertical : materials.carcassOak,
+                    outerRight ? `Bok_${code}_vnejsi_X216_Y151` : `Bok_${code}_pravy`
+                ));
+                // Dno a půda mezi boky
+                upperRightGroup.add(createPanelBox(x1 + t, x2 - t, upCarcassBottom, upCarcassBottom + t, 0, upRightD - t, materials.oakVertical, `Dno_${code}`));
+                upperRightGroup.add(createPanelBox(x1 + t, x2 - t, topY - t, topY, 0, upRightD - t, materials.carcassOak, `Puda_${code}`));
+                // Vložená záda HDF 4 mm (odsazená 14 mm od stěny pro závěsné kování)
+                upperRightGroup.add(createPanelBox(x1 + t, x2 - t, upCarcassBottom + t, topY - t, 1.4, 1.4 + hdf, materials.carcassOak, `Zada_HDF_${code}`));
+                // 2 vnitřní police (Y = 187.7 a 223.0 cm -> 3 rovnoměrné přihrádky 33.4–33.5 cm)
+                [187.7, 223.0].forEach((sy, sIdx) => {
+                    upperRightGroup.add(createPanelBox(x1 + t, x2 - t, sy, sy + t, 1.8, upRightD - t - 1.7, materials.carcassOak, `Police_${code}_${sIdx + 1}`));
+                });
+
+                // Bezúchytková dvířka (spodní přesah 15 mm, svislá léta; R3 má panty vpravo, takže se otevírá od L3 pryč)
+                const dx1 = x1 + leftGap;
+                const dx2 = x2 - g;
+                const w = dx2 - dx1;
+                const hingeX = hingeSide === 'left' ? dx1 : dx2;
 
                 const doorData = createHingedDoor({
-                    name: spec.name,
-                    label: spec.label,
-                    hingePos: { x: hingeX, y: (SPEC.UPPER_BOTTOM + (262 - g)) / 2, z: 40 - t },
+                    name: `Dvirka_${code}_52x109`,
+                    label: `[${code}] Horní pravá dvířka (52 × 109 cm, panty ${hingeSide === 'left' ? 'vlevo' : 'vpravo'}, hl. 40 cm, přesah 15 mm)`,
+                    hingePos: { x: hingeX, y: (SPEC.UPPER_BOTTOM + (topY - g)) / 2, z: upRightD },
                     doorWidth: w,
                     doorHeight: upRightH,
                     doorThick: t,
                     facing: '+Z',
-                    hingeSide: spec.hingeSide,
-                    openAngleRad: spec.openAngle,
-                    handlePosLocal: null, // Bez úchytky – otevírání spodním přesahem dvířek (15 mm) dle kuchyně.pdf
+                    hingeSide,
+                    openAngleRad: openAngle,
+                    handlePosLocal: null,
                     materials
                 });
                 upperRightGroup.add(doorData.pivot);
             });
 
+            // Horní stropní krycí lišta nad R3–R5 (Y: 260..262 cm, čelní v líci korpusu + pravý boční dořez)
+            upperRightGroup.add(createPanelBox(60, SPEC.RIGHT_ARM_LEN - t, topY, ceilY, upRightD - 2 * t, upRightD - t, materials.oakHorizontal, 'Stropni_lista_R3_R5_predni'));
+            upperRightGroup.add(createPanelBox(SPEC.RIGHT_ARM_LEN - t, SPEC.RIGHT_ARM_LEN, topY, ceilY, 0, upRightD - t, materials.oakHorizontal, 'Stropni_lista_R5_bocni'));
+
             cabinetRoot.add(upperRightGroup);
 
-            // --- 3. PODSTAVEC: 22 REKTIFIKAČNÍCH NOŽEK (100 mm) A 4 NACVAKÁVACÍ KRYCÍ SOKLOVÉ LIŠTY ---
+            // --- 3. PODSTAVEC: 18 REKTIFIKAČNÍCH NOŽEK (100 mm) A 2 PRŮBĚŽNÉ ČELNÍ SOKLOVÉ LIŠTY ---
             buildBaseLegsAndPlinth(materials);
 
             scene.add(cabinetRoot);
@@ -1580,75 +1583,75 @@
                 0xfbbf24
             );
 
-            // 3. Pravá část bez rohu: 156 cm (X: 60..216)
+            // 3. Pravá část bez rohu: 156 cm (X: 60..216 -> dole 4 + 2×76 cm, nahoře 3×52 cm)
             addDimensionLine(
                 new THREE.Vector3(60, 1, 76),
                 new THREE.Vector3(216, 1, 76),
                 new THREE.Vector3(60, 1, 60),
                 new THREE.Vector3(216, 1, 60),
                 '156 cm',
-                '3 × 52 cm moduly',
+                '4 + 2×76 cm dole / 3×52 cm nahoře',
                 0xf59e0b
             );
 
-            // 4. Hloubka levé části / spodních skříněk: 60 cm
+            // 4. Hloubka levé části L1, L2, L3 a desky: 60 cm v líci
             addDimensionLine(
                 new THREE.Vector3(0, 1, 196),
                 new THREE.Vector3(60, 1, 196),
                 new THREE.Vector3(0, 1, 180),
                 new THREE.Vector3(60, 1, 180),
                 '60 cm',
-                'Hloubka levé / spodní',
+                'Hloubka v líci (L1/L2/L3)',
                 0x34d399
             );
 
-            // 5. Hloubka spodních pravých skříněk: 60 cm
+            // 5. Hloubka spodních R1–R2 a pracovní desky: 60 cm v líci
             addDimensionLine(
                 new THREE.Vector3(228, 86, 0),
                 new THREE.Vector3(228, 86, 60),
                 new THREE.Vector3(216, 86, 0),
                 new THREE.Vector3(216, 86, 60),
                 '60 cm',
-                'Hloubka spodních',
+                'Hloubka R1–R2 a desky',
                 0x34d399
             );
 
-            // 6. Hloubka horních pravých skříněk: 40 cm
+            // 6. Hloubka horních pravých skříněk R3–R5: 40 cm
             addDimensionLine(
-                new THREE.Vector3(228, 262, 0),
-                new THREE.Vector3(228, 262, 40),
-                new THREE.Vector3(216, 262, 0),
-                new THREE.Vector3(216, 262, 40),
+                new THREE.Vector3(228, 260, 0),
+                new THREE.Vector3(228, 260, 40),
+                new THREE.Vector3(216, 260, 0),
+                new THREE.Vector3(216, 260, 40),
                 '40 cm',
-                'Hloubka horních pravých',
+                'Hloubka horních R3–R5',
                 0xf472b6
             );
 
-            // 7. Výška stropu: 262 cm
+            // 7. Výška stropu: 262 cm (skříně 260 + 2 cm stropní lišta)
             addDimensionLine(
                 new THREE.Vector3(74, 0, 188),
                 new THREE.Vector3(74, 262, 188),
                 new THREE.Vector3(60, 0, 180),
                 new THREE.Vector3(60, 262, 180),
                 '262 cm',
-                'Výška stropu',
+                'Strop (260 + 2 cm lišta)',
                 0x38bdf8,
                 new THREE.Vector3(16, 0, 0)
             );
 
-            // 8. Výška 4 vnitřních šuplíků v levé skříni: 120 cm
+            // 8. Výška 4 vnějších šuplíků v L1: 114 cm (10 sokl + 4 × 26 cm)
             addDimensionLine(
                 new THREE.Vector3(66, 0, 120),
-                new THREE.Vector3(66, 120, 120),
+                new THREE.Vector3(66, 114, 120),
                 new THREE.Vector3(60, 0, 120),
-                new THREE.Vector3(60, 120, 120),
-                '120 cm',
-                '4 vnitřní šuplíky (L1)',
+                new THREE.Vector3(60, 114, 120),
+                '114 cm',
+                '4 vnější šuplíky L1 (4×26)',
                 0xa78bfa,
-                new THREE.Vector3(16, 0, 0)
+                new THREE.Vector3(18, 0, 0)
             );
 
-            // 9. Výška pracovní desky od podlahy: 86 cm (82 cm korpus + 4 cm deska)
+            // 9. Výška pracovní desky od podlahy: 86 cm (10 sokl + 72 korpus + 4 deska)
             addDimensionLine(
                 new THREE.Vector3(228, 0, 60),
                 new THREE.Vector3(228, 86, 60),
@@ -1672,14 +1675,14 @@
                 new THREE.Vector3(22, 0, 0)
             );
 
-            // 11. Výška horních skříněk: 111 cm (dvířka Y: 151..262 cm, přesah 15 mm)
+            // 11. Výška horních skříněk: 109 cm (dvířka Y: 151..260 cm + 2 cm stropní lišta)
             addDimensionLine(
                 new THREE.Vector3(228, 151, 40),
-                new THREE.Vector3(228, 262, 40),
+                new THREE.Vector3(228, 260, 40),
                 new THREE.Vector3(216, 151, 40),
-                new THREE.Vector3(216, 262, 40),
-                '111 cm',
-                'Horní skříňky (R4–R6)',
+                new THREE.Vector3(216, 260, 40),
+                '109 cm',
+                'Horní skř. (+2 cm lišta)',
                 0xf472b6,
                 new THREE.Vector3(22, 0, 0)
             );
@@ -1688,7 +1691,7 @@
         }
 
         /**
-         * Vytvoří výrazný referenční štítek skříňky (L1–L3, R1–R6)
+         * Vytvoří výrazný referenční štítek skříňky (L1–L3, R1–R5)
          */
         function createCabinetLabelSprite(code, accentHex = '#38bdf8') {
             const canvas = document.createElement('canvas');
@@ -1741,7 +1744,7 @@
         }
 
         /**
-         * Přidá referenční označení L1–L3 (levé rameno) a R1–R6 (pravé rameno) ke všem skříňkám
+         * Přidá referenční označení L1–L3 (levé rameno) a R1–R5 (pravé rameno) ke všem skříňkám
          */
         function buildCabinetLabels() {
             labelsGroup = new THREE.Group();
@@ -1749,19 +1752,18 @@
 
             const cabinetLabels = [
                 // Levé rameno (L1–L3)
-                { code: 'L1', pos: [65.5, 165, 150],   color: '#38bdf8' }, // Vysoká levá skříň (60×60×262 cm)
-                { code: 'L2', pos: [65.5, 46, 92],     color: '#38bdf8' }, // Spodní rohová skříňka levá (120×60×82 cm)
-                { code: 'L3', pos: [65.5, 206.5, 82],  color: '#38bdf8' }, // Horní rohová skříňka levá (120×60×111 cm)
+                { code: 'L1', pos: [65.5, 178, 150],   color: '#38bdf8' }, // Vysoká levá skříň (60×60×260 cm, dub)
+                { code: 'L2', pos: [65.5, 46, 94],     color: '#38bdf8' }, // Spodní rohová skříňka levá (120×60×72 cm, bílá)
+                { code: 'L3', pos: [65.5, 205.5, 82],  color: '#38bdf8' }, // Horní rohová skříňka levá (120×60×109 cm, dub)
 
-                // Pravé rameno – spodní zásuvkové skříňky (R1–R3)
-                { code: 'R1', pos: [88, 46, 65.5],     color: '#fbbf24' }, // Spodní pravá zásuvková 1 (52×60×82 cm)
-                { code: 'R2', pos: [138, 46, 65.5],    color: '#fbbf24' }, // Spodní pravá zásuvková 2 (52×60×82 cm)
-                { code: 'R3', pos: [190, 46, 65.5],    color: '#fbbf24' }, // Spodní pravá zásuvková 3 (52×60×82 cm)
+                // Pravé rameno – 2 široké spodní zásuvkové moduly (R1–R2, 2 × 76 cm, bílá)
+                { code: 'R1', pos: [102, 46, 65.5],    color: '#fbbf24' }, // Spodní pravá široká zásuvková 1 (76×60×72 cm, bílá)
+                { code: 'R2', pos: [178, 46, 65.5],    color: '#fbbf24' }, // Spodní pravá široká zásuvková 2 (76×60×72 cm, bílá)
 
-                // Pravé rameno – horní skříňky hloubky 40 cm (R4–R6)
-                { code: 'R4', pos: [88, 206.5, 45.5],  color: '#f472b6' }, // Horní pravá skříňka 1 (52×40×111 cm)
-                { code: 'R5', pos: [138, 206.5, 45.5], color: '#f472b6' }, // Horní pravá skříňka 2 (52×40×111 cm)
-                { code: 'R6', pos: [190, 206.5, 45.5], color: '#f472b6' }  // Horní pravá skříňka 3 (52×40×111 cm)
+                // Pravé rameno – 3 stejné horní skříňky hloubky 40 cm (R3–R5, 3 × 52 cm, dub)
+                { code: 'R3', pos: [86, 205.5, 45.5],  color: '#f472b6' }, // Horní pravá skříňka 1 (52×40×109 cm, panty vpravo)
+                { code: 'R4', pos: [138, 205.5, 45.5], color: '#f472b6' }, // Horní pravá skříňka 2 (52×40×109 cm, panty vlevo)
+                { code: 'R5', pos: [190, 205.5, 45.5], color: '#f472b6' }  // Horní pravá skříňka 3 (52×40×109 cm, panty vpravo)
             ];
 
             cabinetLabels.forEach(item => {
@@ -1776,35 +1778,20 @@
         }
 
         /**
-         * Otevře nebo zavře vysokou levou skříň a postupně vysune/zasune všechny 4 skryté vnitřní šuplíky
-         * S časovým odstupem, aby dveře a šuplíky do sebe fyzicky nenarazily.
+         * Otevře nebo zavře horní dvířka L1 a všechny 4 vnější šuplíky v levé skříni L1
          */
         function setTallCabinetAndDrawersState(openState) {
             isTallOpen = openState;
 
-            if (openState) {
-                // Nejprve otevřít vysoké dveře (110°), poté postupně vysunout 4 šuplíky
-                tallCabinetDoor.isOpen = true;
-                tallCabinetDoor.delayTimer = 0;
-                tallCabinetDoor.targetAngle = tallCabinetDoor.openAngle;
+            tallCabinetDoor.isOpen = openState;
+            tallCabinetDoor.delayTimer = 0;
+            tallCabinetDoor.targetAngle = openState ? tallCabinetDoor.openAngle : tallCabinetDoor.closedAngle;
 
-                internalDrawers.forEach((drw, idx) => {
-                    drw.isOpen = true;
-                    drw.delayTimer = 0.32 + idx * 0.08;
-                    drw.targetX = drw.openX;
-                });
-            } else {
-                // Nejprve zasunout všechny 4 šuplíky dovnitř, poté zavřít vysoké dveře
-                internalDrawers.forEach((drw, idx) => {
-                    drw.isOpen = false;
-                    drw.delayTimer = idx * 0.04;
-                    drw.targetX = drw.closedX;
-                });
-
-                tallCabinetDoor.isOpen = false;
-                tallCabinetDoor.delayTimer = 0.36;
-                tallCabinetDoor.targetAngle = tallCabinetDoor.closedAngle;
-            }
+            l1ExternalDrawers.forEach((drw, idx) => {
+                drw.isOpen = openState;
+                drw.delayTimer = idx * 0.05;
+                drw.targetX = openState ? drw.openX : drw.closedX;
+            });
 
             updateUIStateBadges();
         }
@@ -1817,7 +1804,7 @@
             setTallCabinetAndDrawersState(openState);
 
             interactiveItems.forEach(item => {
-                if (item === tallCabinetDoor || item.type === 'internalDrawer') return;
+                if (item === tallCabinetDoor || item.type === 'l1Drawer') return;
                 item.isOpen = openState;
                 item.delayTimer = 0;
                 if (item.type === 'door') {
@@ -1856,7 +1843,7 @@
         }
 
         /**
-         * Přepne viditelnost nacvakávacích krycích soklových lišt (pro zobrazení 22 rektifikačních nožek)
+         * Přepne viditelnost nacvakávacích krycích soklových lišt (pro zobrazení 18 rektifikačních nožek)
          */
         function setPlinthCoversVisible(visible, silent = false) {
             showPlinthCovers = visible;
@@ -1875,7 +1862,7 @@
             if (!silent) {
                 showToast(showPlinthCovers
                     ? 'Krycí lišty soklu nasazeny na soklové klipy.'
-                    : 'Krycí lišty soklu odejmuty – viditelných 22 rektifikačních nožek (100 mm).');
+                    : 'Krycí lišty soklu odejmuty – viditelných 18 rektifikačních nožek (100 mm).');
             }
         }
 
@@ -1913,7 +1900,7 @@
             const view = presets[presetName];
             if (!view) return;
 
-            // Při kliknutí na "Detail levé skříně (4 šuplíky)" ji automaticky otevřeme, pokud je zavřená
+            // Při kliknutí na "Detail levé skříně L1 (4 šuplíky)" ji automaticky otevřeme, pokud je zavřená
             if (presetName === 'leftDrawers' && !isTallOpen) {
                 setTallCabinetAndDrawersState(true);
             }
@@ -1921,7 +1908,7 @@
             // Při kliknutí na "Detail soklu a nožek" automaticky skryjeme krycí lišty, aby byly nožky ihned vidět
             if (presetName === 'plinthDetail' && showPlinthCovers) {
                 setPlinthCoversVisible(false, true);
-                showToast('Krycí lišty soklu skryty – detail 22 rektifikačních nožek a klipů.');
+                showToast('Krycí lišty soklu skryty – detail 18 rektifikačních nožek a klipů.');
             }
 
             cameraAnim = {
@@ -1938,24 +1925,24 @@
         }
 
         /**
-         * Exportuje kompletní 3D geometrii sestavy (včetně vnitřních 4 šuplíků a polic) do formátu .OBJ (v cm)
+         * Exportuje kompletní 3D geometrii sestavy pracovny do formátu .OBJ (v cm)
          */
         function exportToOBJ() {
             try {
                 // Dočasně nastavíme základní uzavřený stav pro čistý CAD export
                 interactiveItems.forEach(item => {
                     if (item.type === 'door') item.pivot.rotation.y = item.closedAngle;
-                    else if (item.type === 'internalDrawer') item.group.position.x = item.closedX;
+                    else if (item.type === 'l1Drawer') item.group.position.x = item.closedX;
                     else if (item.type === 'frontDrawer') item.group.position.z = item.closedZ;
                 });
                 cabinetRoot.updateMatrixWorld(true);
 
                 const lines = [
-                    '# 3D CAD Model Kuchynske a ulozne sestavy - KRONOSPAN K529 HU (Hudson Dub Zlaty)',
+                    '# 3D CAD Model vestavene sestavy do pracovny - KRONOSPAN K529 HU (L1/L3/R3-R5) + bila mat (L2/R1-R2)',
                     '# Jednotky: centimetry (cm)',
-                    '# Leve rameno: 180 cm | Prave rameno: 216 cm (60 + 156 cm) | Vyska stropu: 262 cm',
-                    '# Podstavec: 22 rektifikacnich nozek (100 mm) + 4 nacvakavaci kryci soklove listy (18 mm) na pohledovych stranach',
-                    '# Obsahuje 4 vnitrni zasuvky ve vysoke leve skrini (Y = 13..119 cm) a horni prave skrinky hloubky 40 cm',
+                    '# Leve rameno: 180 cm | Prave rameno: 216 cm (60 + 156 cm) | Strop: 262 cm (skrine 260 + 2 cm lista)',
+                    '# Hloubka: 60 cm v lici (L1/L2/L3/R1-R2 + deska) | Horni prave R3-R5: 40 cm (3x52 cm, R3 panty vpravo)',
+                    '# Podstavec: 18 rektifikacnich nozek (100 mm) | Zasuvky: 4x26 cm (L1) + 6 sirokych 76 cm (R1-R2)',
                     ''
                 ];
 
@@ -2026,7 +2013,7 @@
                 // Obnovení aktuální animované polohy
                 interactiveItems.forEach(item => {
                     if (item.type === 'door') item.pivot.rotation.y = item.currentAngle;
-                    else if (item.type === 'internalDrawer') item.group.position.x = item.currentX;
+                    else if (item.type === 'l1Drawer') item.group.position.x = item.currentX;
                     else if (item.type === 'frontDrawer') item.group.position.z = item.currentZ;
                 });
 
@@ -2034,13 +2021,13 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'Kuchyne_L_180x216x262_K529HU.obj';
+                a.download = 'Pracovna_L_180x216x262_K529HU.obj';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
 
-                showToast('3D model (.OBJ) včetně 4 vnitřních šuplíků byl stažen.');
+                showToast('3D model pracovny (.OBJ) byl úspěšně stažen.');
             } catch (err) {
                 console.error('Chyba při exportu OBJ:', err);
                 showToast('Export se nezdařil, zkuste to prosím znovu.');
@@ -2051,47 +2038,18 @@
          * Zpracuje kliknutí na jednotlivé dvířka nebo zásuvku ve 3D prostoru
          */
         function handleSingleItemToggle(item) {
-            if (item === tallCabinetDoor) {
-                // Pokud zavíráme vysoké dveře, nejprve zasuneme otevřené vnitřní šuplíky
-                const anyDrawerOpen = internalDrawers.some(d => d.isOpen);
-                if (item.isOpen && anyDrawerOpen) {
-                    setTallCabinetAndDrawersState(false);
-                } else {
-                    item.isOpen = !item.isOpen;
-                    item.delayTimer = 0;
-                    item.targetAngle = item.isOpen ? item.openAngle : item.closedAngle;
-                    isTallOpen = item.isOpen;
-                    updateUIStateBadges();
-                }
-                return;
-            }
-
-            if (item.type === 'internalDrawer') {
-                // Pokud klikneme na vnitřní šuplík, ujistíme se, že jsou vysoké dveře otevřené
-                if (!tallCabinetDoor.isOpen) {
-                    tallCabinetDoor.isOpen = true;
-                    tallCabinetDoor.delayTimer = 0;
-                    tallCabinetDoor.targetAngle = tallCabinetDoor.openAngle;
-                    item.isOpen = true;
-                    item.delayTimer = 0.34;
-                    item.targetX = item.openX;
-                } else {
-                    item.isOpen = !item.isOpen;
-                    item.delayTimer = 0;
-                    item.targetX = item.isOpen ? item.openX : item.closedX;
-                }
-                isTallOpen = tallCabinetDoor.isOpen;
-                updateUIStateBadges();
-                return;
-            }
-
-            // Ostatní dvířka a šuplíky
             item.isOpen = !item.isOpen;
             item.delayTimer = 0;
             if (item.type === 'door') {
                 item.targetAngle = item.isOpen ? item.openAngle : item.closedAngle;
+            } else if (item.type === 'l1Drawer') {
+                item.targetX = item.isOpen ? item.openX : item.closedX;
             } else if (item.type === 'frontDrawer') {
                 item.targetZ = item.isOpen ? item.openZ : item.closedZ;
+            }
+            if (item === tallCabinetDoor || item.type === 'l1Drawer') {
+                isTallOpen = tallCabinetDoor.isOpen || l1ExternalDrawers.some(d => d.isOpen);
+                updateUIStateBadges();
             }
         }
 
@@ -2335,7 +2293,7 @@
                 if (item.type === 'door') {
                     item.currentAngle += (item.targetAngle - item.currentAngle) * 0.13;
                     item.pivot.rotation.y = item.currentAngle;
-                } else if (item.type === 'internalDrawer') {
+                } else if (item.type === 'l1Drawer') {
                     item.currentX += (item.targetX - item.currentX) * 0.14;
                     item.group.position.x = item.currentX;
                 } else if (item.type === 'frontDrawer') {
